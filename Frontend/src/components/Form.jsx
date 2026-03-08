@@ -12,7 +12,7 @@ const Form = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    axios.post("http://localhost:3000/post/create-post", data);
+    axios.post("https://teel-twitter-but-better-backend.onrender.com/post/create-post", data);
     
     reset();
   };

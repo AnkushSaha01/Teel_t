@@ -7,7 +7,7 @@ const Feed = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get("http://localhost:3000/post/get-post");
+      const res = await axios.get("https://teel-twitter-but-better-backend.onrender.com/post/get-post");
       
       setData(res.data.posts);
     };
