@@ -18,7 +18,11 @@ const loginController = async (req, res)=>{
     }
 
     const newToken = jwt.sign({id: user._id}, process.env.JWT_SECRET)
-    res.cookie("token", newToken)
+    res.cookie("token", newToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    })
     res.status(200).json({message: "Login successful", user:{
       username: user.username,
       email: user.email,
