@@ -3,7 +3,7 @@ import React, { createContext, useState } from "react";
 export const GlobalContext = createContext();
 
 const ContextProvider = ({ children }) => {
-  const backURI = 'https://teel-twitter-but-better-backend.onrender.com';
+  const backURI = 'https://teel-twitter-but-better-backend-2.onrender.com';
   const [data, setData] = useState([]);
 
   return (
