@@ -147,15 +147,9 @@ const Register = () => {
               className="w-full bg-transparent py-2 text-md md:text-lg lg:text-xl font-medium tracking-tight focus:outline-none placeholder-black/30 text-black file:bg-black/60 file:text-white file:border-none file:px-4 file:py-1 file:rounded-full file:cursor-pointer "
               type="file"
               accept="image/*"
-              {...register("profileImage", {
-                required: "Profile picture is required",
-              })}
+              {...register("profileImage")}
             />
-            {errors.profile && (
-              <p className="text-red-500 text-[10px] tracking-widest uppercase mt-1">
-                {errors.profile.message}
-              </p>
-            )}
+            
           </div>
 
           {/* Bottom section */}
