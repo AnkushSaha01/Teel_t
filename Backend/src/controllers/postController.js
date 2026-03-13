@@ -4,8 +4,11 @@ const postModel = require("../models/post.model");
 const createPost = async (req, res) => {
     const title = req.body.title;
     const content = req.body.content;
+    const author = req.user.username;
+    const profilePic = req.user.profilePic;
     
-    // const author = req.body.author;
+    
+    
 
     if (!title || !content) {
         return res.status(400).json({ message: "Title and content are required" });
@@ -14,7 +17,8 @@ const createPost = async (req, res) => {
     const post = await postModel.create({
         title: title,
         content: content,
-        // author: author
+        author: author,
+        profilePic: profilePic
     });
 
     res.status(201).json({ message: "Post created successfully", post });
@@ -23,6 +27,7 @@ const createPost = async (req, res) => {
 const getPost = async (req, res) => {
     const posts = await postModel.find();
     res.status(200).json({ message: "Posts fetched successfully", posts });
+    
 }
 
 module.exports = { createPost, getPost };

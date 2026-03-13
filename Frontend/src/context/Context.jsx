@@ -3,11 +3,11 @@ import React, { createContext, useState } from "react";
 export const GlobalContext = createContext();
 
 const ContextProvider = ({ children }) => {
-  // Define your global states here
+  const backURI = 'https://teel-twitter-but-better-backend.onrender.com';
   const [data, setData] = useState([]);
 
   return (
-    <GlobalContext.Provider value={{ data, setData }}>
+    <GlobalContext.Provider value={{ data, setData, backURI }}>
       {children}
     </GlobalContext.Provider>
   );

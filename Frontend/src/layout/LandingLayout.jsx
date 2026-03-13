@@ -1,17 +1,14 @@
 import React from "react";
-import Form from "../pages/Form";
-import Header from "./Header";
 import { Outlet } from "react-router-dom";
-import Footer from "./Footer";
+import Header from "./Header";
 
-const AppLayout = () => {
+const LandingLayout = () => {
   return (
     <div className="bg-[#f0efeb] min-h-dvh flex flex-col">
       <Header />
       <Outlet />
-      <Footer />
     </div>
   );
 };
 
-export default AppLayout;
+export default LandingLayout;

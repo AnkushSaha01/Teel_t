@@ -1,8 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { GlobalContext } from "../context/Context";
 
 const Form = () => {
+  const { backURI } = useContext(GlobalContext);
   const {
     register,
     handleSubmit,
@@ -12,7 +14,7 @@ const Form = () => {
 
   const onSubmit = (data) => {
     console.log(data);
-    axios.post("https://teel-twitter-but-better-backend.onrender.com/post/create-post", data);
+    axios.post(`${backURI}/post/create-post`, data, { withCredentials: true });
     
     reset();
   };
