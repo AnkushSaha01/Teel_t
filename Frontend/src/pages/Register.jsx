@@ -32,11 +32,12 @@ const Register = () => {
       withCredentials: true
     }).then((res) => {
       console.log(res.data);
+      reset();
       navigate("/login");
     }).catch((err) => {
       console.log(err);
+      alert(err.response?.data?.message || "Registration failed");
     });
-    reset();
   };
 
   return (
@@ -149,7 +150,6 @@ const Register = () => {
               accept="image/*"
               {...register("profileImage")}
             />
-            
           </div>
 
           {/* Bottom section */}
