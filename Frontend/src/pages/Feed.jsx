@@ -4,7 +4,7 @@ import { GlobalContext } from "../context/Context";
 
 const Feed = () => {
   const { data, setData, backURI } = useContext(GlobalContext);
-
+  //useEffect for API call
   useEffect(() => {
     const fetchData = async () => {
       const res = await axios.get(`${backURI}/post/get-post`, {
@@ -24,6 +24,7 @@ const Feed = () => {
       <style>{`
         .hide-scrollbar::-webkit-scrollbar {
           display: none;
+          
         }
       `}</style>
 
