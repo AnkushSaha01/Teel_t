@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../models/user.model");
+const config = require("../config/config");
 
 const authMiddleware = async (req, res, next) => {
   const token = req.cookies.token;
@@ -8,7 +9,7 @@ const authMiddleware = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET )
+    const decoded = jwt.verify(token, config.JWT_SECRET )
     const user = await userModel.findOne({_id: decoded.id});
     if(!user){
       return res.status(401).json({ message: "Unauthorized" });

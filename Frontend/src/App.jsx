@@ -1,11 +1,11 @@
 import React from "react";
-import Form from "./pages/Form";
-import Home from "./pages/Home";
+import Form from "./pages/form/pages/Form";
+import Home from "./pages/home/pages/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
-import Feed from "./pages/Feed";
-import Register from "./pages/Register";
-import Login from "./pages/Login";
+import Feed from "./pages/feed/pages/Feed";
+import Register from "./pages/register/pages/Register";
+import Login from "./pages/login/pages/Login";
 import LandingLayout from "./layout/LandingLayout";
 
 const router = createBrowserRouter([

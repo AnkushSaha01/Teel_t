@@ -1,19 +1,13 @@
 import React, { useContext, useEffect } from "react";
 import axios from "axios";
-import { GlobalContext } from "../context/Context";
+import { GlobalContext } from "../../../context/Context";
+import Media from "../components/Media";
+import { useFeed } from "../hooks/useFeed";
 
 const Feed = () => {
-  const { data, setData, backURI } = useContext(GlobalContext);
-
+  const { data } = useContext(GlobalContext);
+  const { fetchData } = useFeed();
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await axios.get(`${backURI}/post/get-post`, {
-        withCredentials: true,
-      });
-
-      setData(res.data.posts);
-      console.log(res.data.posts);
-    };
     fetchData();
   }, []);
   return (
@@ -45,23 +39,26 @@ const Feed = () => {
                 <div className="flex items-start gap-4 mb-10">
                   <img
                     className="w-12 h-12 rounded-full"
-                    src={post.profilePic}
+                    src={post?.profilePic}
+                    referrerPolicy="no-referrer"
                     alt=""
                   />
                   <span className="text-[20px] md:text-xs font-medium tracking-tight  text-black/60 mb-4 md:mb-6">
-                    {post.author}
+                    {post?.author}
                   </span>
                 </div>
-                
+
                 <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.95] tracking-tighter uppercase font-medium mb-6 md:mb-10">
                   {post.title}
                 </h1>
-                {/* Adding a sleek bottom border separator for aesthetic context */}
-                <div className="w-1/3 border-b border-black/20 mb-6  md:mt-24"></div>
+
                 <p className="text-lg md:text-2xl font-[GeneralSans-Light] uppercase leading-relaxed max-w-3xl">
                   {post.content}
                 </p>
-                
+                {/* Adding a sleek bottom border separator for aesthetic context */}
+                <div className="w-1/3 border-b border-black/20 mb-6  md:mt-12"></div>
+                {/* Media Section */}
+                <Media post={post} />
               </div>
             </div>
           );

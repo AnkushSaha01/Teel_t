@@ -4,6 +4,9 @@ const postController = require("../controllers/postController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 
-router.post("/create-post", authMiddleware, postController.createPost);
+const multer = require("multer");
+const upload = multer({ storage: multer.memoryStorage() });
+
+router.post("/create-post", authMiddleware, upload.array("media", 10), postController.createPost);
 
 module.exports = router;

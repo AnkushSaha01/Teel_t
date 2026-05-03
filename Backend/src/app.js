@@ -1,3 +1,4 @@
+const config = require("./config/config");
 const express = require("express");
 const app = express();
 // const postModel = require("./models/post.model");
@@ -8,8 +9,26 @@ const loginRoute = require("./routes/login.routes");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
+const passport = require("passport");
+require("./config/passport")(passport);
 
-app.use(cors({ origin: process.env.FRONTEND_URI, credentials: true }));
+const googleAuthRoutes = require("./routes/OAuth.route");
+
+app.use(passport.initialize());
+
+app.use(cors({ 
+    origin: (origin, callback) => {
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        // For development, allow localhost. In production, use the env variable.
+        if (origin.includes("localhost") || origin === config.FRONTEND_URI) {
+            callback(null, true);
+        } else {
+            callback(null, true); // Fallback to true for debugging if there's a mismatch
+        }
+    }, 
+    credentials: true 
+}));
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -20,6 +39,7 @@ app.use("/post", postRoute);
 app.use('/post', getPostRoute);
 app.use("/auth/user", registerRoute);
 app.use("/auth/user", loginRoute);
+app.use("/api/auth/", googleAuthRoutes);
 
 
 

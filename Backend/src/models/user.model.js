@@ -11,9 +11,13 @@ const userSchema = new mongoose.Schema({
     required:true,
     unique:true
   },
+  googleId:{
+    type:String,
+    unique:true,
+    sparse:true
+  },
   password:{
     type:String,
-    required:true
   },
   profilePic:{
     type:String,

@@ -2,6 +2,7 @@ const userModel = require("../models/user.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const uploadFile = require("../services/storage.services.js");
+const config = require("../config/config");
 
 const registerController = async (req, res) => {
   try {
@@ -32,11 +33,9 @@ const registerController = async (req, res) => {
       password: hashedPassword,
       profilePic: profilePic
     });
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+    const token = jwt.sign({ id: user._id }, config.JWT_SECRET);
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
     });
     res.status(201).json({ message: "User created successfully", user:{
       username,

@@ -1,5 +1,5 @@
 import React from "react";
-import Form from "../pages/Form";
+import Form from "../pages/form/pages/Form";
 import Header from "./Header";
 import { Outlet } from "react-router-dom";
 import Footer from "./Footer";
