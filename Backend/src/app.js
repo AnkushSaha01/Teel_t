@@ -6,13 +6,14 @@ const postRoute = require("./routes/post.route");
 const getPostRoute = require("./routes/getPost.route");
 const registerRoute = require("./routes/register.route");
 const loginRoute = require("./routes/login.routes");
+const googleAuthRoutes = require("./routes/OAuth.route");
+const userRoute = require("./routes/user.route");
+const followRoute = require("./routes/follow.route");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 require("./config/passport")(passport);
-
-const googleAuthRoutes = require("./routes/OAuth.route");
 
 app.use(passport.initialize());
 
@@ -40,8 +41,7 @@ app.use('/post', getPostRoute);
 app.use("/auth/user", registerRoute);
 app.use("/auth/user", loginRoute);
 app.use("/api/auth/", googleAuthRoutes);
-
-
-
+app.use("/user", userRoute);
+app.use("/follow", followRoute);
 
 module.exports = app;

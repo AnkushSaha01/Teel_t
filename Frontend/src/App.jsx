@@ -7,6 +7,8 @@ import Feed from "./pages/feed/pages/Feed";
 import Register from "./pages/register/pages/Register";
 import Login from "./pages/login/pages/Login";
 import LandingLayout from "./layout/LandingLayout";
+import Search from "./pages/search/Search";
+import Profile from "./pages/profile/pages/Profile";
 
 const router = createBrowserRouter([
   {
@@ -39,6 +41,14 @@ const router = createBrowserRouter([
         path: "feed",
         element: <Feed />,
       },
+      {
+        path: "search",
+        element: <Search />
+      },
+      {
+        path: "profile",
+        element: <Profile />
+      }
     ],
   },
 ]);

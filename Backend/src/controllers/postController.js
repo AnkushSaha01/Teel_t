@@ -43,31 +43,56 @@ const createPost = async (req, res) => {
 
 const getPost = async (req, res) => {
     try {
-        const posts = await postModel.aggregate(
-  [
-    {
-      $lookup: {
-        from: 'users',
-        localField: 'author',
-        foreignField: '_id',
-        as: 'author'
-      }
-    },
-    { $unwind: { path: '$author' } },
-    {
-      $project: {
-        title: 1,
-        content: 1,
-        media: 1,
-        author: '$author.username',
-        profilePic: '$author.profilePic',
-        createdAt: 1
-      }
-    }
-  ],
-  { maxTimeMS: 60000, allowDiskUse: true })
-        res.status(200).json({ message: "Posts fetched successfully", posts });
+        const limit = parseInt(req.query.limit) || 3;
+        const cursor = req.query.cursor;
+
+        const pipeline = [
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author'
+                }
+            },
+            { $unwind: { path: '$author' } }
+        ];
+
+        // Apply cursor filter if it exists
+        if (cursor) {
+            pipeline.push({
+                $match: {
+                    createdAt: { $lt: new Date(cursor) }
+                }
+            });
+        }
+
+        pipeline.push(
+            { $sort: { createdAt: -1 } },
+            { $limit: limit },
+            {
+                $project: {
+                    title: 1,
+                    content: 1,
+                    media: 1,
+                    author: '$author.username',
+                    profilePic: '$author.profilePic',
+                    createdAt: 1
+                }
+            }
+        );
+
+        const posts = await postModel.aggregate(pipeline);
+        
+        const nextCursor = posts.length === limit ? posts[posts.length - 1].createdAt : null;
+
+        res.status(200).json({ 
+            message: "Posts fetched successfully", 
+            posts,
+            nextCursor 
+        });
     } catch (error) {
+        console.error("Fetch Posts Error:", error);
         res.status(500).json({ message: "Error fetching posts" });
     }
 }
