@@ -9,6 +9,7 @@ const loginRoute = require("./routes/login.routes");
 const googleAuthRoutes = require("./routes/OAuth.route");
 const userRoute = require("./routes/user.route");
 const followRoute = require("./routes/follow.route");
+const interactionRoute = require("./routes/interactions.route");
 const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
@@ -46,6 +47,7 @@ app.use("/api/auth/user", loginRoute);
 app.use("/api/auth/", googleAuthRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/follow", followRoute);
+app.use("/api/interaction", interactionRoute);
 
 app.get("*name", (req, res) => {
   console.log(req.params.name);

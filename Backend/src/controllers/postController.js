@@ -45,6 +45,7 @@ const getPost = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 3;
         const cursor = req.query.cursor;
+        const userId = req.user?._id;
 
         const pipeline = [
             {
@@ -57,6 +58,32 @@ const getPost = async (req, res) => {
             },
             { $unwind: { path: '$author' } }
         ];
+
+        // If user is logged in, check if they liked each post
+        if (userId) {
+            const mongoose = require("mongoose");
+            const userObjectId = typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId;
+            
+            pipeline.push({
+                $lookup: {
+                    from: 'likes',
+                    let: { postId: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$post', '$$postId'] },
+                                        { $eq: ['$user', userObjectId] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'userLikes'
+                }
+            });
+        }
 
         // Apply cursor filter if it exists
         if (cursor) {
@@ -77,7 +104,10 @@ const getPost = async (req, res) => {
                     media: 1,
                     author: '$author.username',
                     profilePic: '$author.profilePic',
-                    createdAt: 1
+                    createdAt: 1,
+                    likeCount: { $ifNull: ['$likeCount', 0] },
+                    commentCount : {$ifNull:['$commentCount',0]},
+                    isLiked: userId ? { $gt: [{ $size: { $ifNull: ['$userLikes', []] } }, 0] } : { $literal: false }
                 }
             }
         );

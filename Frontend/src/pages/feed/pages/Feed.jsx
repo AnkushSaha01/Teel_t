@@ -96,7 +96,7 @@ const Feed = () => {
               {/* Adding a sleek bottom border separator for aesthetic context */}
               {/* Media Section */}
               <Media post={post} />
-              <Interaction postId={post._id}/>
+              <Interaction postId={post._id} initialLikesCount={post.likeCount || 0} initialLikedState={post.isLiked || false}  initialCommentCount={post.commentCount || 0}/>
             </div>
           </div>
         );
