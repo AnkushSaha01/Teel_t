@@ -23,7 +23,7 @@ const Search = () => {
   });
 
   return (
-    <div className="w-full min-h-[calc(100vh-96px)] p-6 md:p-12 font-[GeneralSans-Regular] flex flex-col items-center">
+    <div className="w-full min-h-[calc(100vh-96px)] p-6 md:p-12 font-['ClashGrotesk-Variable'] flex flex-col items-center">
       <div className="w-full max-w-2xl">
         <h1 className="text-4xl md:text-5xl font-medium tracking-tight uppercase mb-8">Search Users</h1>
         

@@ -26,7 +26,7 @@ const Login = () => {
   };
 
   return (
-    <div className="w-full bg-[#F0EFEB] text-black  flex flex-col flex-1 items-start  px-6 py-6 md:py-8 font-[GeneralSans-Regular] relative">
+    <div className="w-full bg-[#F0EFEB] text-black  flex flex-col flex-1 items-start  px-6 py-6 md:py-8 font-['ClashGrotesk-Variable'] relative">
       <div className="w-full max-w-5xl mx-auto flex flex-col grow justify-start mt-10">
         {/* Typographic Header */}
         <h1 className="text-[2rem] leading-none md:text-5xl lg:text-7xl lg:leading-[0.95] font-medium tracking-tighter uppercase mb-8 md:mb-12 text-black">
@@ -110,7 +110,7 @@ const Login = () => {
             {/* Google Login Button */}
             <button
               type="button"
-              onClick={() => (window.location.href = `${backURI}/api/auth/google`)}
+              onClick={() => (window.location.href = `${backURI}/auth/google`)}
               className="w-full flex items-center justify-center gap-3 py-3 md:py-4 border border-black/10 rounded-none bg-white hover:bg-black/5 transition-all text-black text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase"
             >
               <svg className="w-4 h-4" viewBox="0 0 24 24">

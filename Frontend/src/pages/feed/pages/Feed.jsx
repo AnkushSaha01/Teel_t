@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import Media from "../components/Media";
 import { useFeed } from "../hooks/useFeed";
 import { useInView } from "react-intersection-observer";
+import Interaction from "../components/Interaction";
 
 const Feed = () => {
   const { 
@@ -48,7 +49,7 @@ const Feed = () => {
 
   return (
     <div
-      className="w-full h-[calc(100vh-96px)] overflow-y-scroll snap-y snap-mandatory flex flex-col font-[GeneralSans-Regular] hide-scrollbar "
+      className="w-full h-[calc(100vh-96px)] overflow-y-scroll snap-y snap-mandatory flex flex-col font-['ClashGrotesk-Variable'] hide-scrollbar "
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <style>{`
@@ -69,9 +70,9 @@ const Feed = () => {
           <div
             key={post._id}
             ref={isLastElement ? ref : null}
-            className="w-full h-full shrink-0 snap-start snap-always px-6 md:px-12 flex flex-col justify-center text-black "
+            className="w-full min-h-full shrink-0 snap-start snap-always px-6 md:px-12 pt-16 pb-36 flex flex-col justify-center text-black relative"
           >
-            <div className="w-full min-h-[60%] ">
+            <div className="w-full max-w-4xl mx-auto flex flex-col justify-center">
               <div className="flex items-start gap-4 mb-10">
                 <img
                   className="w-12 h-12 rounded-full object-cover"
@@ -84,17 +85,18 @@ const Feed = () => {
                 </span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl lg:text-[5.5rem] leading-[0.95] tracking-tighter uppercase font-medium mb-6 md:mb-10">
+              <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight uppercase font-medium mb-6 md:mb-10">
                 {post.title}
               </h1>
+              <div className="w-1/3 border-b border-black/20 mb-6  md:mt-12"></div>
 
-              <p className="text-lg md:text-2xl font-[GeneralSans-Light] uppercase leading-relaxed max-w-3xl">
+              <p className="text-xl md:text-2xl font-['ClashGrotesk-Variable']  uppercase  max-w-3xl">
                 {post.content}
               </p>
               {/* Adding a sleek bottom border separator for aesthetic context */}
-              <div className="w-1/3 border-b border-black/20 mb-6  md:mt-12"></div>
               {/* Media Section */}
               <Media post={post} />
+              <Interaction postId={post._id}/>
             </div>
           </div>
         );

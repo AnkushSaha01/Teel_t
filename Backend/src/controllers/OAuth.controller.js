@@ -23,7 +23,7 @@ const googleAuthCallback = async (req, res) => {
 
 
   // Redirect to frontend
-  res.redirect(`${config.FRONTEND_URI}/app/feed`);
+  res.redirect(`http://localhost:3000/app/feed`);
 };
 
 module.exports = { googleAuthCallback };

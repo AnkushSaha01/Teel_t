@@ -37,7 +37,7 @@ const Form = () => {
   };
 
   return (
-    <div className="w-full  bg-[#F0EFEB] text-black flex flex-col items-center px-6 py-10 md:p-12 font-[GeneralSans-Regular] relative">
+    <div className="w-full  bg-[#F0EFEB] text-black flex flex-col items-center px-6 py-10 md:p-12 font-['ClashGrotesk-Variable'] relative">
       <div className="w-full max-w-5xl mx-auto flex flex-col grow">
         
         
@@ -87,7 +87,7 @@ const Form = () => {
               </span>
             </div>
             <textarea
-              className="w-full bg-transparent py-4 text-lg md:text-2xl font-[GeneralSans-Light] leading-relaxed focus:outline-none placeholder-black/30 text-black min-h-[150px] resize-y"
+              className="w-full bg-transparent py-4 text-lg md:text-2xl font-['ClashGrotesk-Variable'] font-light leading-relaxed focus:outline-none placeholder-black/30 text-black min-h-[150px] resize-y"
               placeholder="START WRITING..."
               {...register("content", { required: "Content is required", maxLength: 2000 })}
             />

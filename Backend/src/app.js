@@ -36,12 +36,22 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
-app.use("/post", postRoute);
-app.use('/post', getPostRoute);
-app.use("/auth/user", registerRoute);
-app.use("/auth/user", loginRoute);
+app.use(express.static("dist"));
+
+
+app.use("/api/post", postRoute);
+app.use('/api/post', getPostRoute);
+app.use("/api/auth/user", registerRoute);
+app.use("/api/auth/user", loginRoute);
 app.use("/api/auth/", googleAuthRoutes);
-app.use("/user", userRoute);
-app.use("/follow", followRoute);
+app.use("/api/user", userRoute);
+app.use("/api/follow", followRoute);
+
+app.get("*name", (req, res) => {
+  console.log(req.params.name);
+
+  res.sendFile("index.html", { root: "dist" });
+});
+
 
 module.exports = app;

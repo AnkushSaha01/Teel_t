@@ -7,11 +7,11 @@ const Profile = () => {
   const { backURI } = useContext(GlobalContext)
   const { data, isLoading, isError } = useProfile({ backURI })
 
-  if (isLoading) return <div className="w-full min-h-screen flex items-center justify-center font-[GeneralSans-Regular]">Loading profile...</div>;
-  if (isError) return <div className="w-full min-h-screen flex items-center justify-center font-[GeneralSans-Regular] text-red-500">Error loading profile.</div>;
+  if (isLoading) return <div className="w-full min-h-screen flex items-center justify-center font-['ClashGrotesk-Variable']">Loading profile...</div>;
+  if (isError) return <div className="w-full min-h-screen flex items-center justify-center font-['ClashGrotesk-Variable'] text-red-500">Error loading profile.</div>;
 
   return (
-    <div className="w-full min-h-screen bg-[#f0efeb] flex flex-col items-center py-12 px-4 font-[GeneralSans-Regular]">
+    <div className="w-full min-h-screen bg-[#f0efeb] flex flex-col items-center py-12 px-4 font-['ClashGrotesk-Variable']">
       {/* Profile Section */}
       <div className="w-full max-w-3xl bg-white shadow-lg rounded-3xl p-8 md:p-12 mb-8 flex flex-col items-center text-center transition-all hover:shadow-xl">
         <div className="relative mb-6">
