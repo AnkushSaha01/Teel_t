@@ -11,6 +11,7 @@ import Search from "./pages/search/Search";
 import Profile from "./pages/profile/pages/Profile";
 import Messages from "./pages/messages/page/Messages";
 import Notifications from "./pages/notifications/pages/Notifications";
+import Chat from "./pages/messages/page/Chat";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path:"messages",
         element:<Messages />
+      },
+      {
+        path: "messages/:id",
+        element: <Chat />
       },
       {
         path:"notifications",

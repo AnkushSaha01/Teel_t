@@ -91,21 +91,17 @@ const searchUsers = async (req, res) => {
   }
 };
 
-
-
-
-const getMe = async(req,res) => {
-    
-    try {
-        const user = await userModel.findById(req.user._id);
-        res.status(200).json({ user });
-    } catch (error) {
-        console.error("Get Me Error:", error);
-        res.status(500).json({ message: "Error getting me" });
-    }
-}
+const getMe = async (req, res) => {
+  try {
+    const user = await userModel.findById(req.user._id);
+    res.status(200).json({ user });
+  } catch (error) {
+    console.error("Get Me Error:", error);
+    res.status(500).json({ message: "Error getting me" });
+  }
+};
 
 module.exports = {
   searchUsers,
-  getMe
+  getMe,
 };

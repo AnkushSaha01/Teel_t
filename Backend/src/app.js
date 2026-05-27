@@ -14,6 +14,7 @@ const cors = require("cors");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
+const messageRouter = require("./routes/messages.route");
 require("./config/passport")(passport);
 
 app.use(passport.initialize());
@@ -48,6 +49,7 @@ app.use("/api/auth/", googleAuthRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/follow", followRoute);
 app.use("/api/interaction", interactionRoute);
+app.use("/api/messages", messageRouter);
 
 app.get("*name", (req, res) => {
   console.log(req.params.name);
