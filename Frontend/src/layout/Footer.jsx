@@ -6,11 +6,10 @@ const Footer = () => {
 
   const getLinkClasses = (path) => {
     const isActive = location.pathname === path;
-    return `p-3.5 rounded-full transition-all duration-300 flex items-center justify-center ${
-      isActive
-        ? "text-black bg-black/5 scale-110"
-        : "text-black/60 hover:text-black hover:bg-black/5 hover:scale-110"
-    }`;
+    return `p-3.5 rounded-full transition-all duration-300 flex items-center justify-center ${isActive
+      ? "text-black bg-black/10 scale-110 "
+      : "text-black/60 hover:text-black hover:bg-black/5 hover:scale-110"
+      }`;
   };
 
   const socialLinkClasses =
@@ -20,7 +19,7 @@ const Footer = () => {
     <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
       <div className="flex items-center gap-1.5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-md px-3 py-2 rounded-full border border-black/10">
         {/* Internal Navigation Links */}
-        <Link to="/app/feed" className={getLinkClasses("/feed")} title="Home">
+        <Link to="/app/feed" className={getLinkClasses("/app/feed")} title="Home">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="20"
@@ -39,7 +38,7 @@ const Footer = () => {
 
         <Link
           to="/app/create-post"
-          className={getLinkClasses("/create-post")}
+          className={getLinkClasses("/app/create-post")}
           title="Create"
         >
           <svg
@@ -57,10 +56,29 @@ const Footer = () => {
             <path d="m15 5 4 4" />
           </svg>
         </Link>
+        <Link
+          to="/app/messages"
+          className={getLinkClasses("/app/messages")}
+          title="Messages"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+          </svg>
+        </Link>
 
         <Link
           to="/app/search"
-          className={getLinkClasses("/search")}
+          className={getLinkClasses("/app/search")}
           title="Search"
         >
           <svg
@@ -81,7 +99,7 @@ const Footer = () => {
 
         <Link
           to="/app/profile"
-          className={getLinkClasses("/profile")}
+          className={getLinkClasses("/app/profile")}
           title="Profile"
         >
           <svg
@@ -99,6 +117,7 @@ const Footer = () => {
             <circle cx="12" cy="7" r="4" />
           </svg>
         </Link>
+        
 
         {/* Divider */}
         <div className="w-px h-6 bg-black/15 mx-1.5"></div>
@@ -127,29 +146,7 @@ const Footer = () => {
           </svg>
         </a>
 
-        <a
-          href="https://www.linkedin.com/in/ankush-saha-9003b21b1/"
-          target="_blank"
-          rel="noreferrer"
-          className={socialLinkClasses}
-          title="LinkedIn"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-            <rect width="4" height="12" x="2" y="9" />
-            <circle cx="4" cy="4" r="2" />
-          </svg>
-        </a>
+        
       </div>
     </div>
   );

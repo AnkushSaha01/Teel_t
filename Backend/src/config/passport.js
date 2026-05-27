@@ -15,6 +15,10 @@ module.exports = (passport) => {
           // 1. Check if user already exists with this Google ID
           let user = await userModel.findOne({ googleId: profile.id });
           if (user) {
+            if (!user.fullname) {
+              user.fullname = profile.displayName;
+              await user.save();
+            }
             user.authMessage = "user logged in successfully";
             return done(null, user);
           }
@@ -33,13 +37,16 @@ module.exports = (passport) => {
             ) {
               user.profilePic = profile.photos[0].value;
             }
+
+            if (!user.fullname) {
+              user.fullname = profile.displayName;
+            }
             await user.save();
 
             user.authMessage = "user logged in successfully";
             return done(null, user);
           }
 
-          // 3. Create a new user
           // 3. Create a new user
           // Generate a unique username
           const uniqueUsername =
@@ -50,6 +57,7 @@ module.exports = (passport) => {
             googleId: profile.id,
             email: profile.emails[0].value,
             username: uniqueUsername,
+            fullname: profile.displayName,
             profilePic:
               profile.photos && profile.photos.length > 0
                 ? profile.photos[0].value

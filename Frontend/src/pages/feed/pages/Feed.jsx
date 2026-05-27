@@ -73,14 +73,14 @@ const Feed = () => {
             className="w-full min-h-full shrink-0 snap-start snap-always px-6 md:px-12 pt-16 pb-36 flex flex-col justify-center text-black relative"
           >
             <div className="w-full max-w-4xl mx-auto flex flex-col justify-center">
-              <div className="flex items-start gap-4 mb-10">
+              <div className="flex items-center gap-4 mb-6">
                 <img
-                  className="w-12 h-12 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-cover"
                   src={post?.profilePic}
                   referrerPolicy="no-referrer"
                   alt={post?.author}
                 />
-                <span className="text-[20px] md:text-xs font-medium tracking-tight  text-black/60 mb-4 md:mb-6">
+                <span className="text-lg  font-medium tracking-tight  text-black/60 ">
                   {post?.author}
                 </span>
               </div>

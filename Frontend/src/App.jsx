@@ -9,6 +9,8 @@ import Login from "./pages/login/pages/Login";
 import LandingLayout from "./layout/LandingLayout";
 import Search from "./pages/search/Search";
 import Profile from "./pages/profile/pages/Profile";
+import Messages from "./pages/messages/page/Messages";
+import Notifications from "./pages/notifications/pages/Notifications";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
       {
         path: "profile",
         element: <Profile />
+      },
+      {
+        path:"messages",
+        element:<Messages />
+      },
+      {
+        path:"notifications",
+        element:<Notifications />
       }
     ],
   },

@@ -2,28 +2,33 @@ import React from "react";
 import { useProfile } from "../pages/profile/hooks/useProfile";
 import { useContext } from "react";
 import { GlobalContext } from "../context/Context";
+import { Link } from "react-router-dom";
 
 const Header = () => {
   const { backURI } = useContext(GlobalContext);
   const { data } = useProfile({ backURI });
   return (
-    // <div className="w-[90%] mx-auto mt-5 flex bg-[white] justify-between items-center text-[10px] md:text-xs  tracking-[0.2em] py-6 px-8 rounded-4xl shadow-md shadow-[] ">
-    //   <div className="flex items-center gap-3">
-    //     <img className="w-10 h-10 rounded-full" src={data?.profilePic} alt="" />
-    //     <div className="flex flex-col">
-    //       <span className="text-lg uppercase tracking-tight">
-    //         {data?.username}
-    //       </span>
-    //       <span className="text-xs text-gray-700 leading-none tracking-tight">
-    //         {data?.email}
-    //       </span>
-    //     </div>
-    //   </div>
-    //   <div>
-    //     <span className="uppercase">Menu</span>
-    //   </div>
-    // </div>
-    <div className="w-full  text-3xl text-center uppercase select-none px-5 pt-6 ">Teel</div>
+    <div className="flex justify-between items-center px-8 pt-6">
+      <div className="w-fit font-[ClashGrotesk-Variable] font-medium text-4xl text-center uppercase select-none ">
+        Teel
+      </div>
+      <Link to="/app/notifications">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="size-6 "
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0M3.124 7.5A8.969 8.969 0 0 1 5.292 3m13.416 0a8.969 8.969 0 0 1 2.168 4.5"
+          />
+        </svg>
+      </Link>
+    </div>
   );
 };
 

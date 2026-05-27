@@ -19,7 +19,9 @@ const Form = () => {
 
   useEffect(() => {
     return () => {
-      selectedFilesRef.current.forEach((fileObj) => URL.revokeObjectURL(fileObj.preview));
+      selectedFilesRef.current.forEach((fileObj) =>
+        URL.revokeObjectURL(fileObj.preview),
+      );
     };
   }, []);
 
@@ -125,7 +127,7 @@ const Form = () => {
               </span>
             </div>
             <textarea
-              className="w-full bg-transparent py-4 text-lg md:text-2xl font-['ClashGrotesk-Variable'] font-light leading-relaxed focus:outline-none placeholder-black/30 text-black min-h-[150px] resize-y"
+              className="w-full bg-transparent py-4 text-lg md:text-2xl font-['ClashGrotesk-Variable'] font-light leading-relaxed focus:outline-none placeholder-black/30 text-black  resize-y"
               placeholder="START WRITING..."
               {...register("content", {
                 required: "Content is required",
@@ -140,7 +142,7 @@ const Form = () => {
           </div>
 
           {/* Media Upload */}
-          <div className="w-full flex flex-col gap-2 md:gap-4">
+          <div className="w-full flex flex-col gap-2 md:gap-4 ">
             <div className="w-full flex justify-between items-center border-b border-black/80 pb-2">
               <label className="text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase text-black">
                 MEDIA (IMAGES OR VIDEOS)
@@ -150,7 +152,7 @@ const Form = () => {
               </span>
             </div>
             <input
-              className="hidden"
+              className="hidden "
               type="file"
               id="media-upload"
               multiple
@@ -159,7 +161,7 @@ const Form = () => {
             />
             <label
               htmlFor="media-upload"
-              className="w-full bg-black/5 py-8 md:py-12 flex flex-col items-center justify-center border-2 border-dashed border-black/10 hover:border-black/30 hover:bg-black/10 transition-all cursor-pointer group"
+              className="w-full bg-black/5 py-8 rounded-2xl md:py-12 flex flex-col items-center justify-center border-2 border-dashed border-black/10 hover:border-black/30 hover:bg-black/10 transition-all cursor-pointer group"
             >
               <span className="text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase text-black/60 group-hover:text-black">
                 Click to upload or drag and drop
@@ -222,12 +224,9 @@ const Form = () => {
           </div>
 
           {/* Bottom section matching the image's bottom text and submit button */}
-          <div className="w-full pt-8 flex flex-col-reverse md:flex-row justify-between items-end md:items-center gap-8 border-none mt-auto">
-            <span className="text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase text-black">
-              READY FOR PUBLISH
-            </span>
+          <div className="w-full flex flex-col-reverse md:flex-row justify-between items-end md:items-center gap-8 border-none mt-auto">
             <button
-              className="bg-black text-[#F0EFEB] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase py-4 px-12 md:py-5 md:px-16 hover:bg-black/80 transition-colors w-full md:w-auto mb-20"
+              className="bg-black rounded-full text-[#F0EFEB] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase py-4 px-12 md:py-5 md:px-16 hover:bg-black/80 transition-colors w-full md:w-auto mb-20"
               type="submit"
             >
               Submit Post
