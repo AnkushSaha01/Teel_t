@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { GlobalContext } from "../../../context/Context";
-import { fetchConversations, fetchChats } from "../services/messages.api";
+import { fetchConversations, fetchChats, createGroup } from "../services/messages.api";
 import { getMe } from "../../profile/services/profile.services";
 
 export const useMessages = () => {
@@ -56,3 +56,11 @@ const { backURI } = useContext(GlobalContext);
 };
 
 export default useMessages;
+
+export const useCreateGroup = () => {
+    const { backURI } = useContext(GlobalContext);
+
+    return useMutation({
+        mutationFn: ({ name, members }) => createGroup(backURI, name, members),
+    });
+};

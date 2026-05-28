@@ -15,6 +15,7 @@ const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
 const messageRouter = require("./routes/messages.route");
+const groupRouter = require("./routes/group.route");
 require("./config/passport")(passport);
 
 app.use(passport.initialize());
@@ -50,6 +51,8 @@ app.use("/api/user", userRoute);
 app.use("/api/follow", followRoute);
 app.use("/api/interaction", interactionRoute);
 app.use("/api/messages", messageRouter);
+app.use("/api/group", groupRouter);
+
 
 app.get("*name", (req, res) => {
   console.log(req.params.name);

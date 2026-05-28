@@ -87,10 +87,10 @@ const Login = () => {
           </div>
 
           {/* Bottom section */}
-          <div className="w-full pt-4 flex flex-col gap-4 border-none mt-auto">
-            <div className="w-full flex flex-col-reverse md:flex-row justify-between items-end md:items-center gap-6">
-              <span className="text-[10px] md:text-xs font-semibold tracking-[0.2em] uppercase text-black">
-                READY TO LOGIN
+          <div className="w-full pt-4 flex flex-col justify-center gap-4 border-none mt-auto">
+            <div className="w-full flex flex-col-reverse md:flex-row justify-center items-center gap-6">
+              <span className="text-[12px] md:text-xs   uppercase text-black">
+                Don't have an account? <button className="text-[12px] cursor-pointer uppercase font-medium" onClick={() => navigate("/register")}>Sign Up</button>
               </span>
               <button
                 className="bg-black text-[#F0EFEB] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase py-3 px-10 md:py-4 md:px-14 hover:bg-black/80 transition-colors w-full md:w-auto"

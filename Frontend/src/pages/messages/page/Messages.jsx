@@ -1,17 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useMessages from "../hooks/useMessages";
+import useMessages, { useCreateGroup } from "../hooks/useMessages";
+import MessagesDropdown from "../components/MessagesDropdown";
+import CreateGroupModal from "../components/CreateGroupModal";
 
 const Messages = () => {
   const navigate = useNavigate();
   const { users, loading, error, refetch } = useMessages();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+
+  const createGroup = useCreateGroup();
+
+  const handleCreateGroup = (groupData) => {
+    console.log("Group creation payload:", groupData);
+    createGroup.mutate(groupData);
+    setToastMessage(`Group "${groupData.name}" created successfully!`);
+    setTimeout(() => {
+      setToastMessage("");
+    }, 3000);
+  };
 
   if (loading) {
     return (
       <div className="w-full h-[calc(100vh-96px)] flex flex-col justify-center items-center font-['ClashGrotesk-Variable']">
         <div className="flex flex-col items-center gap-4 animate-pulse">
           <div className="w-10 h-10 rounded-full border-2 border-black/10 border-t-black animate-spin"></div>
-          <span className="text-xs uppercase tracking-[0.2em] text-black/40">Loading chats...</span>
+          <span className="text-xs uppercase tracking-[0.2em] text-black/40">
+            Loading chats...
+          </span>
         </div>
       </div>
     );
@@ -20,7 +38,9 @@ const Messages = () => {
   if (error) {
     return (
       <div className="w-full h-[calc(100vh-96px)] flex flex-col justify-center items-center font-['ClashGrotesk-Variable'] px-6 text-center">
-        <div className="text-red-500 uppercase tracking-widest text-xs mb-4">{error}</div>
+        <div className="text-red-500 uppercase tracking-widest text-xs mb-4">
+          {error}
+        </div>
         <button
           onClick={() => refetch()}
           className="px-6 py-2.5 bg-black text-[#f0efeb] text-xs font-semibold tracking-[0.2em] uppercase rounded-full hover:bg-black/80 transition-all"
@@ -38,19 +58,42 @@ const Messages = () => {
           display: none;
         }
       `}</style>
-      
+
       <div className="w-full max-w-2xl mx-auto">
         {/* Header Title */}
-        <div className="mb-10">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight uppercase leading-none mb-4">
-            Messages
-          </h1>
-          <div className="flex justify-between items-center text-xs uppercase tracking-[0.15em] text-black/50">
-            <span>Conversations</span>
-            <span className="font-semibold text-black bg-black/5 px-2.5 py-1 rounded-full">
-              {users.length}
-            </span>
+        <div className="mb-5">
+          <div className="flex justify-between  items-center mb-4">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight uppercase leading-none ">
+              Messages
+            </h1>
+            <div className="relative">
+              <button
+                onClick={() => setIsDropdownOpen((prev) => !prev)}
+                className="transition-all duration-300 cursor-pointer p-2 rounded-full hover:bg-black/5 active:scale-95 flex items-center justify-center text-black"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={1.5}
+                  stroke="currentColor"
+                  className="size-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 12.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5ZM12 18.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5Z"
+                  />
+                </svg>
+              </button>
+              <MessagesDropdown
+                isOpen={isDropdownOpen}
+                onClose={() => setIsDropdownOpen(false)}
+                onCreateGroup={() => setIsCreateGroupOpen(true)}
+              />
+            </div>
           </div>
+
           <div className="w-full h-px bg-black/15 mt-6"></div>
         </div>
 
@@ -73,13 +116,16 @@ const Messages = () => {
                 />
               </svg>
             </div>
-            <h2 className="text-xl font-medium uppercase tracking-wider mb-2">No active chats</h2>
+            <h2 className="text-xl font-medium uppercase tracking-wider mb-2">
+              No active chats
+            </h2>
             <p className="text-xs uppercase tracking-wider text-black/40 max-w-sm leading-relaxed">
-              Accept follow requests or connect with people to start direct messaging.
+              Accept follow requests or connect with people to start direct
+              messaging.
             </p>
           </div>
         ) : (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
             {users.map((user) => {
               const displayName = user.fullname || user.username;
               const hasName = !!user.fullname;
@@ -87,18 +133,23 @@ const Messages = () => {
               return (
                 <div
                   key={user._id}
-                  onClick={() => navigate(`/app/messages/${user._id}`, { state: { user } })}
-                  className="w-full bg-white/60 backdrop-blur-md border border-black/10 p-5 rounded-3xl flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white animate-[scaleUp_0.4s_ease-out] cursor-pointer"
+                  onClick={() =>
+                    navigate(`/app/messages/${user._id}`, { state: { user } })
+                  }
+                  className="w-full bg-black/10 backdrop-blur-md p-3 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.06)] hover:bg-white animate-[scaleUp_0.4s_ease-out] cursor-pointer"
                 >
                   <div className="flex items-center gap-4">
                     <img
-                      src={user.profilePic || "https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png"}
+                      src={
+                        user.profilePic ||
+                        "https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png"
+                      }
                       alt={displayName}
-                      className="w-14 h-14 rounded-full object-cover border border-black/10"
+                      className="w-10 h-10 rounded-full object-cover border border-black/10"
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex flex-col">
-                      <span className="text-xl font-medium tracking-tight text-black leading-tight">
+                      <span className="text-lg  text-black leading-tight">
                         {displayName}
                       </span>
                     </div>
@@ -109,6 +160,33 @@ const Messages = () => {
           </div>
         )}
       </div>
+
+      <CreateGroupModal
+        isOpen={isCreateGroupOpen}
+        onClose={() => setIsCreateGroupOpen(false)}
+        users={users}
+        onCreateGroup={handleCreateGroup}
+      />
+
+      {toastMessage && (
+        <div className="fixed w-fit top-8 left-1/2 -translate-x-1/2 bg-black text-[#f0efeb] text-[12px]  py-3 px-6 rounded-full shadow-2xl z-50 animate-[fadeIn_0.2s_ease-out] flex justify-center items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={2.5}
+            stroke="currentColor"
+            className="w-4 h-4 text-green-400"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          {toastMessage}
+        </div>
+      )}
     </div>
   );
 };
