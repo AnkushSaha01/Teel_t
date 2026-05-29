@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useMessages, { useCreateGroup, useUserGroups } from "../hooks/useMessages";
 import MessagesDropdown from "../components/MessagesDropdown";
 import CreateGroupModal from "../components/CreateGroupModal";
+import CreateTempGroupModal from "../components/CreateTempGroupModal";
 
 const Messages = () => {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ const Messages = () => {
   const [activeTab, setActiveTab] = useState("peoples");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isCreateGroupOpen, setIsCreateGroupOpen] = useState(false);
+  const [isCreateTempGroupOpen, setIsCreateTempGroupOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
   const createGroup = useCreateGroup();
@@ -21,6 +23,19 @@ const Messages = () => {
       onSuccess: () => {
         refetchGroups();
         setToastMessage(`Group "${groupData.name}" created successfully!`);
+        setTimeout(() => {
+          setToastMessage("");
+        }, 3000);
+      }
+    });
+  };
+
+  const handleCreateTempGroup = (groupData) => {
+    console.log("Temp Group creation payload:", groupData);
+    createGroup.mutate(groupData, {
+      onSuccess: () => {
+        refetchGroups();
+        setToastMessage(`Temporary Group "${groupData.name}" created for ${groupData.duration} days!`);
         setTimeout(() => {
           setToastMessage("");
         }, 3000);
@@ -96,6 +111,7 @@ const Messages = () => {
                 isOpen={isDropdownOpen}
                 onClose={() => setIsDropdownOpen(false)}
                 onCreateGroup={() => setIsCreateGroupOpen(true)}
+                onCreateTempGroup={() => setIsCreateTempGroupOpen(true)}
               />
             </div>
           </div>
@@ -257,6 +273,13 @@ const Messages = () => {
         onClose={() => setIsCreateGroupOpen(false)}
         users={users}
         onCreateGroup={handleCreateGroup}
+      />
+
+      <CreateTempGroupModal
+        isOpen={isCreateTempGroupOpen}
+        onClose={() => setIsCreateTempGroupOpen(false)}
+        users={users}
+        onCreateGroup={handleCreateTempGroup}
       />
 
       {toastMessage && (

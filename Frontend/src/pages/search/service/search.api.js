@@ -16,3 +16,10 @@ export const followUser = async (userId,backURI) => {
   });
   return res.data;
 };
+
+export const unfollowUser = async (userId, backURI) => {
+  const res = await axios.post(`${backURI}/follow/unfollow/${userId}`, {}, {
+    withCredentials: true,
+  });
+  return res.data;
+};

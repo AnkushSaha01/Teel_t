@@ -16,7 +16,7 @@ const Footer = () => {
     "p-3.5 text-black/60 hover:text-black hover:bg-black/5 hover:scale-110 rounded-full transition-all duration-300 flex items-center justify-center";
 
   return (
-    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-50">
+    <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-10">
       <div className="flex items-center gap-1.5 bg-white shadow-[0_8px_30px_rgb(0,0,0,0.08)] backdrop-blur-md px-3 py-2 rounded-full border border-black/10">
         {/* Internal Navigation Links */}
         <Link to="/app/feed" className={getLinkClasses("/app/feed")} title="Home">

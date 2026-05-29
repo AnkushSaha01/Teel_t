@@ -56,6 +56,9 @@ const initSocket = (httpServer) => {
       const { message, receiver, groupId } = data;
       
       if (groupId) {
+        // Fetch group's expiresAt to handle cascade TTL deletion
+        const group = await groupModel.findById(groupId).select("expiresAt");
+        
         // Broadcast group message to group room
         io.to(groupId).emit("receive_message", {
           message,
@@ -67,6 +70,7 @@ const initSocket = (httpServer) => {
           message,
           sender: socket.user.id,
           groupId,
+          expiresAt: group?.expiresAt || undefined,
         });
       } else {
         // Direct message

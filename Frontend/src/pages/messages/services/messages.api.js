@@ -15,8 +15,8 @@ export const fetchChats = async (backURI, receiverId) => {
 }
 
 
-export const createGroup = async (backURI, name, members) => {
-    const res = await axios.post(`${backURI}/group/create-group`, {name, members}, {
+export const createGroup = async (backURI, name, members, duration) => {
+    const res = await axios.post(`${backURI}/group/create-group`, {name, members, duration}, {
         withCredentials: true,
     });
     return res.data;

@@ -61,7 +61,7 @@ export const useCreateGroup = () => {
     const { backURI } = useContext(GlobalContext);
 
     return useMutation({
-        mutationFn: ({ name, members }) => createGroup(backURI, name, members),
+        mutationFn: ({ name, members, duration }) => createGroup(backURI, name, members, duration),
     });
 };
 

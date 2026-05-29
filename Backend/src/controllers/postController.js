@@ -45,9 +45,23 @@ const getPost = async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 3;
         const cursor = req.query.cursor;
+        const authorId = req.query.authorId;
         const userId = req.user?._id;
 
-        const pipeline = [
+        const pipeline = [];
+
+        if (authorId) {
+            const mongoose = require("mongoose");
+            if (mongoose.Types.ObjectId.isValid(authorId)) {
+                pipeline.push({
+                    $match: {
+                        author: new mongoose.Types.ObjectId(authorId)
+                    }
+                });
+            }
+        }
+
+        pipeline.push(
             {
                 $lookup: {
                     from: 'users',
@@ -57,7 +71,7 @@ const getPost = async (req, res) => {
                 }
             },
             { $unwind: { path: '$author' } }
-        ];
+        );
 
         // If user is logged in, check if they liked each post
         if (userId) {
@@ -127,4 +141,61 @@ const getPost = async (req, res) => {
     }
 }
 
-module.exports = { createPost, getPost };
+const deletePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const currentUserId = req.user._id;
+
+        const post = await postModel.findById(id);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Verify if logged-in user is the author
+        if (post.author.toString() !== currentUserId.toString()) {
+            return res.status(403).json({ message: "Unauthorized to delete this post" });
+        }
+
+        await postModel.findByIdAndDelete(id);
+
+        res.status(200).json({ message: "Post deleted successfully" });
+    } catch (error) {
+        console.error("Delete Post Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+const updatePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, content } = req.body;
+        const currentUserId = req.user._id;
+
+        if (!title || !content) {
+            return res.status(400).json({ message: "Title and content are required" });
+        }
+
+        const post = await postModel.findById(id);
+        if (!post) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        // Verify if logged-in user is the author
+        if (post.author.toString() !== currentUserId.toString()) {
+            return res.status(403).json({ message: "Unauthorized to update this post" });
+        }
+
+        const updatedPost = await postModel.findByIdAndUpdate(
+            id,
+            { $set: { title, content } },
+            { new: true }
+        );
+
+        res.status(200).json({ message: "Post updated successfully", post: updatedPost });
+    } catch (error) {
+        console.error("Update Post Error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+module.exports = { createPost, getPost, deletePost, updatePost };

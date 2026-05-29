@@ -25,6 +25,14 @@ const userSchema = new mongoose.Schema({
   profilePic:{
     type:String,
     default:"https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png"
+  },
+  bannerPic:{
+    type:String,
+    default:"https://ik.imagekit.io/bvd7qjtev/qingbao-meng-01_igFr7hd4-unsplash.jpg"
+  },
+  bio:{
+    type:String,
+    default:"Welcome to my profile! This is a demo bio."
   }
 })
 

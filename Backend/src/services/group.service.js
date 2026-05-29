@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const groupModel = require("../models/group.model");
 const chatModel = require("../models/chat.model");
 
-const createGroup = async ({ name, members, admin }) => {
+const createGroup = async ({ name, members, admin, duration }) => {
   try {
     // 1. Basic validation
     if (!name || !admin) {
@@ -27,12 +27,19 @@ const createGroup = async ({ name, members, admin }) => {
       memberIds.push(admin);
     }
     
-    const group = await groupModel.create({
+    const groupData = {
       name,
       members: memberIds,
       admin,
       messages: [],
-    });
+    };
+
+    if (duration) {
+      // duration is in days, so duration * 24 * 60 * 60 * 1000 ms
+      groupData.expiresAt = new Date(Date.now() + duration * 24 * 60 * 60 * 1000);
+    }
+
+    const group = await groupModel.create(groupData);
     return group;
   } catch (error) {
     throw new Error(error.message);
