@@ -3,7 +3,7 @@ import React, { createContext, useState } from "react";
 export const GlobalContext = createContext();
 
 const ContextProvider = ({ children }) => {
-  const backURI = 'http://localhost:3001/api';
+  const backURI = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
   const [data, setData] = useState([]);
 
   return (
