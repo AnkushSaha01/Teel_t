@@ -12,6 +12,10 @@ const chatSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "user",
   },
+  groupId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Group",
+  },
   
 }, {
   timestamps:true,

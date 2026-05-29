@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const cookie = require("cookie");
 const config = require("../config/config");
 const chatModel = require("../models/chat.model");
+const groupModel = require("../models/group.model");
 
 const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
@@ -36,22 +37,51 @@ const initSocket = (httpServer) => {
     }
   });
 
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log("A user connected:", socket.id);
     socket.join(socket.user.id);
 
+    // Join room for each group the user is in
+    try {
+      const groups = await groupModel.find({ members: socket.user.id });
+      groups.forEach((group) => {
+        socket.join(group._id.toString());
+        console.log(`User ${socket.user.id} joined group room: ${group._id}`);
+      });
+    } catch (err) {
+      console.error("Error joining group rooms:", err);
+    }
+
     socket.on("send_message", async (data) => {
-      const { message, receiver } = data;
-      io.to(receiver).emit("receive_message", {
-        message,
-        sender: socket.user.id,
-        receiver,
-      });
-      await chatModel.create({
-        message,
-        sender: socket.user.id,
-        receiver,
-      });
+      const { message, receiver, groupId } = data;
+      
+      if (groupId) {
+        // Broadcast group message to group room
+        io.to(groupId).emit("receive_message", {
+          message,
+          sender: socket.user.id,
+          groupId,
+          createdAt: new Date().toISOString(),
+        });
+        await chatModel.create({
+          message,
+          sender: socket.user.id,
+          groupId,
+        });
+      } else {
+        // Direct message
+        io.to(receiver).emit("receive_message", {
+          message,
+          sender: socket.user.id,
+          receiver,
+          createdAt: new Date().toISOString(),
+        });
+        await chatModel.create({
+          message,
+          sender: socket.user.id,
+          receiver,
+        });
+      }
     });
 
     socket.on("disconnect", () => {

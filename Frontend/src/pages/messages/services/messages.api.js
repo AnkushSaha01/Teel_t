@@ -21,3 +21,17 @@ export const createGroup = async (backURI, name, members) => {
     });
     return res.data;
 }
+
+export const fetchUserGroups = async (backURI) => {
+  const res = await axios.get(`${backURI}/group/user-groups`, {
+    withCredentials: true,
+  });
+  return res.data;
+};
+
+export const fetchGroupMessages = async (backURI, groupId) => {
+  const res = await axios.get(`${backURI}/group/get-messages/${groupId}`, {
+    withCredentials: true,
+  });
+  return res.data;
+};

@@ -12,6 +12,7 @@ import Profile from "./pages/profile/pages/Profile";
 import Messages from "./pages/messages/page/Messages";
 import Notifications from "./pages/notifications/pages/Notifications";
 import Chat from "./pages/messages/page/Chat";
+import GroupChat from "./pages/messages/page/GroupChat";
 
 const router = createBrowserRouter([
   {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
       {
         path: "messages/:id",
         element: <Chat />
+      },
+      {
+        path: "messages/group/:id",
+        element: <GroupChat />
       },
       {
         path:"notifications",

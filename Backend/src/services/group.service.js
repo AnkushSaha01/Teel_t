@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const groupModel = require("../models/group.model");
+const chatModel = require("../models/chat.model");
 
 const createGroup = async ({ name, members, admin }) => {
   try {
@@ -38,6 +39,35 @@ const createGroup = async ({ name, members, admin }) => {
   }
 };
 
+const getUserGroups = async (userId) => {
+  try {
+    if (!userId) {
+      throw new Error("User ID is required.");
+    }
+    const groups = await groupModel.find({ members: userId })
+      .populate("admin", "username fullname profilePic")
+      .populate("members", "username fullname profilePic");
+    return groups;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
+const getGroupMessages = async (groupId) => {
+  try {
+    if (!groupId) {
+      throw new Error("Group ID is required.");
+    }
+    const messages = await chatModel.find({ groupId })
+      .populate("sender", "username fullname profilePic");
+    return messages;
+  } catch (error) {
+    throw new Error(error.message);
+  }
+};
+
 module.exports = {
   createGroup,
+  getUserGroups,
+  getGroupMessages,
 };

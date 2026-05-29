@@ -85,12 +85,12 @@ const Feed = () => {
                 </span>
               </div>
 
-              <h1 className="text-4xl md:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight uppercase font-medium mb-6 md:mb-10">
+              <h1 className="text-3xl md:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight uppercase font-medium mb-2 md:mb-10">
                 {post.title}
               </h1>
-              <div className="w-1/3 border-b border-black/20 mb-6  md:mt-12"></div>
+              <div className="w-1/3 border-b border-black/20 mb-2  md:mt-12"></div>
 
-              <p className="text-xl md:text-2xl font-['ClashGrotesk-Variable']  uppercase  max-w-3xl">
+              <p className="text-md md:text-2xl font-['ClashGrotesk-Variable']  uppercase leading-5 w-full">
                 {post.content}
               </p>
               {/* Adding a sleek bottom border separator for aesthetic context */}
