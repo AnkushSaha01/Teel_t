@@ -30,11 +30,6 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-
-app.use(express.static("dist"));
-
-
 app.use("/api/post", postRoute);
 app.use('/api/post', getPostRoute);
 app.use("/api/auth/user", registerRoute);
@@ -47,12 +42,18 @@ app.use("/api/messages", messageRouter);
 app.use("/api/group", groupRouter);
 app.use("/api/picklist", picklistRouter);
 
-
-app.get("*name", (req, res) => {
-  console.log(req.params.name);
-
-  res.sendFile("index.html", { root: "dist" });
+// Health check / welcome message for the API root
+app.get("/", (req, res) => {
+  res.status(200).json({ 
+    message: "Teel API Server is running successfully!",
+    status: "healthy",
+    timestamp: new Date()
+  });
 });
 
+// 404 handler for unmatched routes
+app.use((req, res) => {
+  res.status(404).json({ message: "API endpoint not found" });
+});
 
 module.exports = app;
