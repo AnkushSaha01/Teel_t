@@ -26,7 +26,7 @@ const googleAuthCallback = async (req, res) => {
   const authMsg = req.user.authMessage || "loggedIn";
 
   // Redirect to frontend
-  res.redirect(`http://localhost:3000/app/feed`);
+  res.redirect(`https://teel-app.vercel.app/app/feed`);
 };
 
 module.exports = { googleAuthCallback };
