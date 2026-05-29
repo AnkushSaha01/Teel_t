@@ -1,7 +1,6 @@
 const config = require("./config/config");
 const express = require("express");
 const app = express();
-const config = require("./config/config");
 // const postModel = require("./models/post.model");
 const postRoute = require("./routes/post.route");
 const getPostRoute = require("./routes/getPost.route");
