@@ -9,12 +9,13 @@ const registerController = async (req, res) => {
     const { username, email, password } = req.body;
     const file = req.file;
 
-    let profilePic = "https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png"
-    if(file){
+    let profilePic =
+      "https://ik.imagekit.io/bvd7qjtev/man-user-circle-icon.png";
+    if (file) {
       const result = await uploadFile(file.buffer.toString("base64"));
       profilePic = result.url;
     }
-    if(!username || !email || !password){
+    if (!username || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
     if (
@@ -31,17 +32,23 @@ const registerController = async (req, res) => {
       username,
       email,
       password: hashedPassword,
-      profilePic: profilePic
+      profilePic: profilePic,
     });
     const token = jwt.sign({ id: user._id }, config.JWT_SECRET);
     res.cookie("token", token, {
       httpOnly: true,
+      secure: true, // MUST be true in production to allow HTTPS transmission
+      sameSite: "none", // MUST be "none" to allow cross-domain cookie transmission
+      maxAge: 24 * 60 * 60 * 1000,
     });
-    res.status(201).json({ message: "User created successfully", user:{
-      username,
-      email,
-      _id:user._id
-    } });
+    res.status(201).json({
+      message: "User created successfully",
+      user: {
+        username,
+        email,
+        _id: user._id,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }

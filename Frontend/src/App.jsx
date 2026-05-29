@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import Form from "./pages/form/pages/Form";
 import Home from "./pages/home/pages/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -13,6 +13,8 @@ import Messages from "./pages/messages/page/Messages";
 import Notifications from "./pages/notifications/pages/Notifications";
 import Chat from "./pages/messages/page/Chat";
 import GroupChat from "./pages/messages/page/GroupChat";
+import { registerSW } from 'virtual:pwa-register';
+
 
 const router = createBrowserRouter([
   {
@@ -78,6 +80,19 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  useEffect(() => {
+    // Registers service worker and updates automatically when new versions are deployed
+    const updateSW = registerSW({
+      onNeedRefresh() {
+        if (confirm("New update available! Would you like to reload?")) {
+          updateSW(true);
+        }
+      },
+      onOfflineReady() {
+        console.log("Teel is ready to run offline!");
+      },
+    });
+  }, []);
   return <RouterProvider router={router} />;
 };
 

@@ -1,6 +1,7 @@
 const config = require("./config/config");
 const express = require("express");
 const app = express();
+const config = require("./config/config");
 // const postModel = require("./models/post.model");
 const postRoute = require("./routes/post.route");
 const getPostRoute = require("./routes/getPost.route");
@@ -21,18 +22,10 @@ require("./config/passport")(passport);
 
 app.use(passport.initialize());
 
-app.use(cors({ 
-    origin: (origin, callback) => {
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
-        // For development, allow localhost. In production, use the env variable.
-        if (origin.includes("localhost") || origin === config.FRONTEND_URI) {
-            callback(null, true);
-        } else {
-            callback(null, true); // Fallback to true for debugging if there's a mismatch
-        }
-    }, 
-    credentials: true 
+app.use(cors({
+  origin: config.CLIENT_URL, // e.g. "https://teel-app.vercel.app"
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
 }));
 app.use(morgan("dev"));
 app.use(express.json());
