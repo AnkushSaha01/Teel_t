@@ -81,6 +81,19 @@ const router = createBrowserRouter([
 
 const App = () => {
   useEffect(() => {
+    // Check if there is a token in the URL query string (from Google OAuth redirect)
+    const params = new URLSearchParams(window.location.search);
+    const urlToken = params.get("token");
+    if (urlToken) {
+      localStorage.setItem("token", urlToken);
+      // Clean up the URL parameters so the token is not visible in the browser address bar
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState({}, document.title, cleanUrl);
+      window.location.reload(); // Force reload to let axios fetch requests read the new token
+    }
+  }, []);
+
+  useEffect(() => {
     // Registers service worker and updates automatically when new versions are deployed
     const updateSW = registerSW({
       onNeedRefresh() {

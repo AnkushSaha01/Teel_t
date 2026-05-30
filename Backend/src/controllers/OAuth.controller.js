@@ -25,8 +25,8 @@ const googleAuthCallback = async (req, res) => {
   // Grab the explicit message set by Passport
   const authMsg = req.user.authMessage || "loggedIn";
 
-  // Redirect to frontend
-  res.redirect(`https://teel-app.vercel.app/app/feed`);
+  // Redirect to frontend with token parameter
+  res.redirect(`${config.CLIENT_URL}/app/feed?token=${token}`);
 };
 
 module.exports = { googleAuthCallback };
