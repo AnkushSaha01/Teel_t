@@ -15,26 +15,49 @@ const initSocket = (httpServer) => {
   });
 
   io.use((socket, next) => {
-    const cookieString = socket.handshake.headers.cookie;
-    if (!cookieString) {
-      console.log("No cookie found");
-      return next(new Error("Authentication error"));
+    // 1. Check for token in handshake auth
+    let token = socket.handshake.auth?.token;
+    if (token && token.startsWith("Bearer ")) {
+      token = token.slice(7);
     }
-    if (cookieString) {
-      const parsedCookies = cookie.parse(cookieString);
 
-      const token = parsedCookies.token;
-      if (token) {
-        jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
-          if (err) {
-            return next(new Error("Authentication error"));
-          }
-          socket.user = decoded;
-          console.log(decoded);
-          next();
-        });
+    // 2. Fallback to cookies (useful for local development or legacy client connections)
+    if (!token) {
+      const cookieString = socket.handshake.headers.cookie;
+      if (cookieString) {
+        const parsedCookies = cookie.parse(cookieString);
+        token = parsedCookies.token || parsedCookies.refreshToken;
       }
     }
+
+    if (!token) {
+      console.log("No token or cookie found for socket authentication");
+      return next(new Error("Authentication error: Missing token"));
+    }
+
+    // 3. Verify the token (try Access Token Secret first, then Refresh / JWT Secrets)
+    jwt.verify(token, config.ACCESS_TOKEN_SECRET, (err, decoded) => {
+      if (!err) {
+        socket.user = decoded;
+        return next();
+      }
+
+      jwt.verify(token, config.REFRESH_TOKEN_SECRET, (err2, decoded2) => {
+        if (!err2) {
+          socket.user = decoded2;
+          return next();
+        }
+
+        jwt.verify(token, config.JWT_SECRET, (err3, decoded3) => {
+          if (!err3) {
+            socket.user = decoded3;
+            return next();
+          }
+          console.error("Socket Auth verification failed:", err3.message);
+          return next(new Error("Authentication error: Invalid token"));
+        });
+      });
+    });
   });
 
   io.on("connection", async (socket) => {

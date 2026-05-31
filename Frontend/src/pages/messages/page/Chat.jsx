@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { io } from "socket.io-client";
 import { useChats } from "../hooks/useMessages";
-import { GlobalContext } from "../../../context/Context";
+import { GlobalContext, getAccessToken } from "../../../context/Context";
 import { useProfile } from "../../profile/hooks/useProfile";
 
 
@@ -64,12 +64,16 @@ const Chat = () => {
   useEffect(() => {
     if (!chatUser?._id) return;
     
-    // const socketUrl = import.meta.env.VITE_BACKEND_URL 
-    //   ? import.meta.env.VITE_BACKEND_URL.replace('/api', '') 
-    //   : window.location.origin;
+    const envUrl = import.meta.env.VITE_BACKEND_URL;
+    const socketUrl = envUrl 
+      ? envUrl.replace('/api', '') 
+      : "https://teel-api.onrender.com";
 
-    const socketUrl = "https://teel-api.onrender.com"
-    const socket = io(socketUrl, { withCredentials: true });
+    const token = getAccessToken();
+    const socket = io(socketUrl, { 
+      auth: { token },
+      withCredentials: true 
+    });
     socketRef.current = socket;
 
     socket.once("connect", () => {
