@@ -12,7 +12,7 @@ import useUnfollow from "../../search/hooks/useUnfollow";
 import PostTile from "../../search/components/postTile";
 
 const Profile = () => {
-  const { backURI, accessToken } = useContext(GlobalContext);
+  const { backURI, accessToken, updateAccessToken } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { userId } = useParams();
   const queryClient = useQueryClient();
@@ -93,13 +93,15 @@ const Profile = () => {
   const handleLogout = async () => {
     try {
       await logoutUser({ backURI });
+    } catch (error) {
+      console.error("Logout failed on server:", error);
+    } finally {
+      // Always perform local session cleanup and redirect to login page
       updateAccessToken(null);
       // Clear React Query cache so the next user doesn't see stale profile/feed data
       queryClient.clear();
       // Redirect to login page
       navigate("/login");
-    } catch (error) {
-      console.error("Logout failed:", error);
     }
   };
 

@@ -66,11 +66,12 @@ const logoutController = async (req, res) => {
     }
 
     // Clear cookies
+    const isProduction = process.env.NODE_ENV === "production";
     res.clearCookie("token");
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: isProduction,
+      sameSite: isProduction ? "none" : "lax",
     });
 
     res.status(200).json({ message: "Logout successful" });
