@@ -106,6 +106,10 @@ const App = () => {
         })
         .catch((err) => {
           console.log("No active session or session expired.");
+          const isPublicRoute = ["/login", "/register", "/"].includes(window.location.pathname);
+          if (!isPublicRoute) {
+            window.location.href = "/login";
+          }
         });
     }
   }, [updateAccessToken, backURI]);

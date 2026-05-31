@@ -48,45 +48,55 @@ axios.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Check if error is 401 Unauthorized and code is TOKEN_EXPIRED
-    if (error.response?.status === 401 && error.response?.data?.code === "TOKEN_EXPIRED" && !originalRequest._retry) {
-      originalRequest._retry = true;
+    // Check if error is 401 Unauthorized
+    if (error.response?.status === 401) {
+      if (error.response?.data?.code === "TOKEN_EXPIRED" && !originalRequest._retry) {
+        originalRequest._retry = true;
 
-      if (isRefreshing) {
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers.Authorization = `Bearer ${token}`;
-            return axios(originalRequest);
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({ resolve, reject });
           })
-          .catch((err) => Promise.reject(err));
-      }
+            .then((token) => {
+              originalRequest.headers.Authorization = `Bearer ${token}`;
+              return axios(originalRequest);
+            })
+            .catch((err) => Promise.reject(err));
+        }
 
-      isRefreshing = true;
+        isRefreshing = true;
 
-      try {
-        // Call backend /refresh to rotate refresh token and get a new access token
-        const res = await axios.post(`${backURI}/auth/user/refresh`, {}, { withCredentials: true });
-        const { accessToken } = res.data;
+        try {
+          // Call backend /refresh to rotate refresh token and get a new access token
+          const res = await axios.post(`${backURI}/auth/user/refresh`, {}, { withCredentials: true });
+          const { accessToken } = res.data;
 
-        // Save new access token globally
-        setAccessToken(accessToken);
+          // Save new access token globally
+          setAccessToken(accessToken);
 
-        // Update headers and retry original request
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
-        processQueue(null, accessToken);
-        isRefreshing = false;
+          // Update headers and retry original request
+          originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+          processQueue(null, accessToken);
+          isRefreshing = false;
 
-        return axios(originalRequest);
-      } catch (refreshError) {
-        processQueue(refreshError, null);
-        isRefreshing = false;
+          return axios(originalRequest);
+        } catch (refreshError) {
+          processQueue(refreshError, null);
+          isRefreshing = false;
 
-        // Refresh failed (e.g. refresh token expired or hijacked) -> clear session and redirect to login
-        setAccessToken(null);
-        window.location.href = "/login";
-        return Promise.reject(refreshError);
+          // Refresh failed (e.g. refresh token expired or hijacked) -> clear session and redirect to login
+          setAccessToken(null);
+          window.location.href = "/login";
+          return Promise.reject(refreshError);
+        }
+      } else {
+        // Completely unauthorized (e.g. missing token, invalid token) -> redirect to login if not on a public route
+        const isPublicRoute = ["/login", "/register", "/"].includes(window.location.pathname);
+        if (!isPublicRoute) {
+          setAccessToken(null);
+          window.location.href = "/login";
+        }
+        return Promise.reject(error);
       }
     }
 
