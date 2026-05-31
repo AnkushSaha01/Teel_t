@@ -45,7 +45,7 @@ const Interaction = ({ postId, initialLikesCount = 0, initialLikedState = false,
   };
 
   const handleShare = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/post/${postId}`);
+    navigator.clipboard.writeText(`${window.location.origin}/app/post/${postId}`);
     setShowToast(true);
     setTimeout(() => {
       setShowToast(false);

@@ -8,7 +8,7 @@ const groupModel = require("../models/group.model");
 const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://localhost:3000",
+      origin: "http://teel-app.vercel.app",
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
     },
