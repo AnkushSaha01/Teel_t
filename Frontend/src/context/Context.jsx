@@ -11,7 +11,7 @@ export const setAccessToken = (token) => {
 };
 
 const ContextProvider = ({ children }) => {
-  const backURI = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+  const backURI = import.meta.env.VITE_BACKEND_URL || '/api';
   const [data, setData] = useState([]);
   const [accessToken, _setAccessToken] = useState(null);
 

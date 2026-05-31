@@ -8,7 +8,7 @@ import axios from 'axios'
 
 import { getAccessToken, setAccessToken } from './context/Context'
 
-const backURI = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3001/api';
+const backURI = import.meta.env.VITE_BACKEND_URL || '/api';
 
 // Queue to hold requests while refreshing token
 let isRefreshing = false;

@@ -64,7 +64,10 @@ const Chat = () => {
   useEffect(() => {
     if (!chatUser?._id) return;
     
-    const socket = io('http://localhost:3001', { withCredentials: true });
+    const socketUrl = import.meta.env.VITE_BACKEND_URL 
+      ? import.meta.env.VITE_BACKEND_URL.replace('/api', '') 
+      : window.location.origin;
+    const socket = io(socketUrl, { withCredentials: true });
     socketRef.current = socket;
 
     socket.once("connect", () => {
