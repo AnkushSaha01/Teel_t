@@ -8,7 +8,7 @@ const groupModel = require("../models/group.model");
 const initSocket = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: "http://teel-app.vercel.app",
+      origin: "https://teel-app.vercel.app",
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       credentials: true,
     },
@@ -16,7 +16,7 @@ const initSocket = (httpServer) => {
 
   io.use((socket, next) => {
     const cookieString = socket.handshake.headers.cookie;
-    if(!cookieString){
+    if (!cookieString) {
       console.log("No cookie found");
       return next(new Error("Authentication error"));
     }
@@ -54,11 +54,11 @@ const initSocket = (httpServer) => {
 
     socket.on("send_message", async (data) => {
       const { message, receiver, groupId } = data;
-      
+
       if (groupId) {
         // Fetch group's expiresAt to handle cascade TTL deletion
         const group = await groupModel.findById(groupId).select("expiresAt");
-        
+
         // Broadcast group message to group room
         io.to(groupId).emit("receive_message", {
           message,
