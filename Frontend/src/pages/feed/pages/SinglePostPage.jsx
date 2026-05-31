@@ -35,7 +35,7 @@ const SinglePostPage = () => {
       {/* Sleek Back Navigation Icon Bar */}
       <div className="w-full max-w-4xl mx-auto px-6 md:px-12 pt-8">
         <button
-          onClick={() => navigate(-1)}
+          onClick={() => navigate('/app/feed')}
           className="flex items-center gap-2 text-black/60 hover:text-black uppercase text-[10px] md:text-xs tracking-widest font-bold transition-colors cursor-pointer select-none"
         >
           <svg
