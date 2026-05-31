@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const sessionModel = require("../models/session.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const uploadFile = require("../services/storage.services.js");
@@ -34,15 +35,32 @@ const registerController = async (req, res) => {
       password: hashedPassword,
       profilePic: profilePic,
     });
-    const token = jwt.sign({ id: user._id }, config.JWT_SECRET);
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: true, // MUST be true in production to allow HTTPS transmission
-      sameSite: "none", // MUST be "none" to allow cross-domain cookie transmission
-      maxAge: 24 * 60 * 60 * 1000,
+    // Generate Access & Refresh tokens
+    const accessToken = jwt.sign({ id: user._id }, config.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ id: user._id }, config.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    // Store Session in separate DB collection
+    await sessionModel.create({
+      userId: user._id,
+      refreshToken,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
     });
+
+    // Clear legacy single JWT cookie if present
+    res.clearCookie("token");
+
+    // Set Refresh Token in secure httpOnly cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
     res.status(201).json({
       message: "User created successfully",
+      accessToken,
       user: {
         username,
         email,

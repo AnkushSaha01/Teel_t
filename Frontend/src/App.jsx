@@ -1,5 +1,7 @@
-import React, {useEffect} from "react";
+import React, { useEffect, useContext } from "react";
 import Form from "./pages/form/pages/Form";
+import axios from "axios";
+import { GlobalContext } from "./context/Context";
 import Home from "./pages/home/pages/Home";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./layout/AppLayout";
@@ -80,18 +82,28 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
+  const { updateAccessToken, backURI } = useContext(GlobalContext);
+
   useEffect(() => {
     // Check if there is a token in the URL query string (from Google OAuth redirect)
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get("token");
     if (urlToken) {
-      localStorage.setItem("token", urlToken);
+      updateAccessToken(urlToken);
       // Clean up the URL parameters so the token is not visible in the browser address bar
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
-      window.location.reload(); // Force reload to let axios fetch requests read the new token
+    } else {
+      // If no token in URL, perform silent refresh on initial mount to restore active session
+      axios.post(`${backURI}/auth/user/refresh`, {}, { withCredentials: true })
+        .then((res) => {
+          updateAccessToken(res.data.accessToken);
+        })
+        .catch((err) => {
+          console.log("No active session or session expired.");
+        });
     }
-  }, []);
+  }, [updateAccessToken, backURI]);
 
   useEffect(() => {
     // Registers service worker and updates automatically when new versions are deployed

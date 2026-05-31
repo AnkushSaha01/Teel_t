@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../../context/Context";
 
 const Login = () => {
-  const { backURI } = useContext(GlobalContext);
+  const { backURI, updateAccessToken } = useContext(GlobalContext);
   const navigate = useNavigate();
   const {
     register,
@@ -18,6 +18,7 @@ const Login = () => {
     console.log(data);
     axios.post(backURI + "/auth/user/login", data, { withCredentials: true }).then((res) => {
       console.log(res.data);
+      updateAccessToken(res.data.accessToken);
       navigate("/app/feed");
     }).catch((err) => {
       console.log(err);

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../../../context/Context";
 
 const Register = () => {
-  const { backURI } = useContext(GlobalContext);
+  const { backURI, updateAccessToken } = useContext(GlobalContext);
   const navigate = useNavigate();
   const {
     register,
@@ -29,8 +29,9 @@ const Register = () => {
       withCredentials: true
     }).then((res) => {
       console.log(res.data);
+      updateAccessToken(res.data.accessToken);
       reset();
-      navigate("/login");
+      navigate("/app/feed");
     }).catch((err) => {
       console.log(err);
       alert(err.response?.data?.message || "Registration failed");

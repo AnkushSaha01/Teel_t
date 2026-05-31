@@ -1,4 +1,5 @@
 const userModel = require("../models/user.model");
+const sessionModel = require("../models/session.model");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const config = require("../config/config");
@@ -18,15 +19,32 @@ const loginController = async (req, res) => {
       return res.status(400).json({ message: "Invalid password" });
     }
 
-    const newToken = jwt.sign({ id: user._id }, config.JWT_SECRET);
-    res.cookie("token", newToken, {
+    // Generate short-lived Access Token (15 minutes) and long-lived Refresh Token (7 days)
+    const accessToken = jwt.sign({ id: user._id }, config.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const refreshToken = jwt.sign({ id: user._id }, config.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    // Store Session in separate DB collection
+    await sessionModel.create({
+      userId: user._id,
+      refreshToken,
+      userAgent: req.headers["user-agent"],
+      ipAddress: req.ip,
+    });
+
+    // Clear legacy single JWT cookie if present
+    res.clearCookie("token");
+
+    // Set Refresh Token in secure httpOnly cookie
+    res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true, // MUST be true in production to allow HTTPS transmission
       sameSite: "none", // MUST be "none" to allow cross-domain cookie transmission
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
+
     res.status(200).json({
       message: "Login successful",
+      accessToken,
       user: {
         username: user.username,
         email: user.email,
@@ -40,11 +58,75 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   try {
+    const refreshToken = req.cookies.refreshToken;
+    if (refreshToken) {
+      // Invalidate the session on the database
+      await sessionModel.deleteOne({ refreshToken });
+    }
+
+    // Clear cookies
     res.clearCookie("token");
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
     res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     res.status(500).json({ message: "Internal server error", error });
   }
 };
 
-module.exports = { loginController, logoutController };
+const refreshController = async (req, res) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Unauthorized: Missing refresh token" });
+    }
+
+    let decoded;
+    try {
+      decoded = jwt.verify(refreshToken, config.REFRESH_TOKEN_SECRET);
+    } catch (err) {
+      return res.status(401).json({ message: "Unauthorized: Invalid or expired refresh token" });
+    }
+
+    // Check if session exists in DB
+    const session = await sessionModel.findOne({ refreshToken });
+    if (!session) {
+      // Replay Attack Detection: If a valid refresh token is used but no active session matches it,
+      // it might have already been used/rotated (e.g. stolen). Invalidate ALL sessions for this user!
+      await sessionModel.deleteMany({ userId: decoded.id });
+      res.clearCookie("refreshToken", {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+      });
+      return res.status(401).json({ message: "Security Alert: Session hijacked. Please log in again." });
+    }
+
+    // Generate new Access and Refresh tokens (Refresh Token Rotation)
+    const newAccessToken = jwt.sign({ id: decoded.id }, config.ACCESS_TOKEN_SECRET, { expiresIn: "15m" });
+    const newRefreshToken = jwt.sign({ id: decoded.id }, config.REFRESH_TOKEN_SECRET, { expiresIn: "7d" });
+
+    // Rotate/Replace the refresh token in the database
+    session.refreshToken = newRefreshToken;
+    session.createdAt = new Date(); // Reset TTL expiration timer
+    await session.save();
+
+    // Set the new rotated Refresh Token cookie
+    res.cookie("refreshToken", newRefreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({ accessToken: newAccessToken });
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error", error });
+  }
+};
+
+module.exports = { loginController, logoutController, refreshController };
