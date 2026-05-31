@@ -23,6 +23,8 @@ const Media = ({post}) => {
             <video
               src={item.url}
               controls
+              playsInline
+              preload="metadata"
               className="h-full w-auto block object-contain"
             />
           )}
