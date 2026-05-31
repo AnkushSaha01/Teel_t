@@ -64,9 +64,11 @@ const Chat = () => {
   useEffect(() => {
     if (!chatUser?._id) return;
     
-    const socketUrl = import.meta.env.VITE_BACKEND_URL 
-      ? import.meta.env.VITE_BACKEND_URL.replace('/api', '') 
-      : window.location.origin;
+    // const socketUrl = import.meta.env.VITE_BACKEND_URL 
+    //   ? import.meta.env.VITE_BACKEND_URL.replace('/api', '') 
+    //   : window.location.origin;
+
+    const socketUrl = "https://teel-api.onrender.com"
     const socket = io(socketUrl, { withCredentials: true });
     socketRef.current = socket;
 
