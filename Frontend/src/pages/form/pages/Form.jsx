@@ -1,16 +1,18 @@
 import React, { useContext, useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { GlobalContext } from "../../../context/Context";
 
 const Form = () => {
   const { backURI } = useContext(GlobalContext);
+  const navigate = useNavigate();
   const [selectedFiles, setSelectedFiles] = useState([]);
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm();
 
   // Mirror state in a ref to clean up object URLs securely on unmount
@@ -47,7 +49,6 @@ const Form = () => {
       return prev.filter((_, i) => i !== indexToDelete);
     });
   };
-
   const onSubmit = (data) => {
     const formData = new FormData();
     formData.append("title", data.title);
@@ -58,7 +59,7 @@ const Form = () => {
       formData.append("media", fileObj.file);
     });
 
-    axios
+    return axios
       .post(`${backURI}/post/create-post`, formData, {
         withCredentials: true,
       })
@@ -70,12 +71,12 @@ const Form = () => {
           URL.revokeObjectURL(fileObj.preview),
         );
         setSelectedFiles([]);
+        navigate("/app/feed");
       })
       .catch((err) => {
         console.error("Error creating post:", err);
       });
   };
-
   return (
     <div className="w-full  bg-[#F0EFEB] text-black flex flex-col items-center px-6 py-10 md:p-12 font-['ClashGrotesk-Variable'] relative">
       <div className="w-full max-w-5xl mx-auto flex flex-col grow">
@@ -226,10 +227,39 @@ const Form = () => {
           {/* Bottom section matching the image's bottom text and submit button */}
           <div className="w-full flex flex-col-reverse md:flex-row justify-between items-end md:items-center gap-8 border-none mt-auto">
             <button
-              className="bg-black rounded-full text-[#F0EFEB] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase py-4 px-12 md:py-5 md:px-16 hover:bg-black/80 transition-colors w-full md:w-auto mb-20"
+              className={`bg-black rounded-full text-[#F0EFEB] text-[10px] md:text-xs font-bold tracking-[0.2em] uppercase py-4 px-12 md:py-5 md:px-16 hover:bg-black/80 transition-all w-full md:w-auto mb-20 flex items-center justify-center gap-3 ${
+                isSubmitting ? "opacity-75 cursor-not-allowed" : "cursor-pointer"
+              }`}
               type="submit"
+              disabled={isSubmitting}
             >
-              Submit Post
+              {isSubmitting ? (
+                <>
+                  <svg
+                    className="animate-spin h-4 w-4 text-[#F0EFEB]"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  <span>Submitting...</span>
+                </>
+              ) : (
+                "Submit Post"
+              )}
             </button>
           </div>
         </form>
