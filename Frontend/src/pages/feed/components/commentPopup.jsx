@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
+import { createPortal } from "react-dom";
 import useInteraction from "../hooks/useInteraction";
 import { GlobalContext } from "../../../context/Context";
 import { useProfile } from "../../profile/hooks/useProfile";
@@ -9,8 +10,8 @@ const CommentPopup = ({
   onCommentsCountChange,
   postId,
 }) => {
-  const { backURI } = useContext(GlobalContext);
-  const { data: profile } = useProfile({ backURI });
+  const { backURI, accessToken } = useContext(GlobalContext);
+  const { data: profile } = useProfile({ backURI , accessToken});
   const { comments, createComment, isCommentsLoading } = useInteraction(postId);
   const [newComment, setNewComment] = useState("");
 
@@ -34,7 +35,7 @@ const CommentPopup = ({
 
   if (!isOpen) return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-md animate-[fadeIn_0.2s_ease-out]">
       {/* Dialog Card */}
       <div className="bg-[#F0EFEB] border border-black/10 rounded-3xl p-6 md:p-8 w-[90%] max-w-lg shadow-[0_20px_50px_rgba(0,0,0,0.15)] relative animate-[scaleUp_0.25s_ease-out] flex flex-col max-h-[80vh] font-['ClashGrotesk-Variable']">
@@ -165,7 +166,8 @@ const CommentPopup = ({
           </button>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

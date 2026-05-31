@@ -1,17 +1,11 @@
 import { useEffect, useRef } from "react";
-import Media from "../components/Media";
+import SinglePost from "../components/SinglePost";
 import { useFeed } from "../hooks/useFeed";
 import { useInView } from "react-intersection-observer";
-import Interaction from "../components/Interaction";
 
 const Feed = () => {
-  const { 
-    data, 
-    fetchNextPage, 
-    hasNextPage, 
-    isFetchingNextPage,
-    status 
-  } = useFeed();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
+    useFeed();
 
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -27,25 +21,32 @@ const Feed = () => {
   }, [inView]);
 
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage && !hasTriggeredForCurrentView.current) {
+    if (
+      inView &&
+      hasNextPage &&
+      !isFetchingNextPage &&
+      !hasTriggeredForCurrentView.current
+    ) {
       hasTriggeredForCurrentView.current = true; // Lock it
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (status === "pending") return (
-    <div className="w-full h-full flex items-center justify-center text-black/50 uppercase tracking-widest text-xs">
-      Loading...
-    </div>
-  );
+  if (status === "pending")
+    return (
+      <div className="w-full h-full flex items-center justify-center text-black/50 uppercase tracking-widest text-xs">
+        Loading...
+      </div>
+    );
 
-  if (status === "error") return (
-    <div className="w-full h-full flex items-center justify-center text-red-500 uppercase tracking-widest text-xs">
-      Error loading posts
-    </div>
-  );
+  if (status === "error")
+    return (
+      <div className="w-full h-full flex items-center justify-center text-red-500 uppercase tracking-widest text-xs">
+        Error loading posts
+      </div>
+    );
 
-  const allPosts = data?.pages.flatMap(page => page.posts) || [];
+  const allPosts = data?.pages.flatMap((page) => page.posts) || [];
 
   return (
     <div
@@ -67,38 +68,11 @@ const Feed = () => {
       {allPosts.map((post, index) => {
         const isLastElement = allPosts.length === index + 1;
         return (
-          <div
+          <SinglePost
             key={post._id}
-            ref={isLastElement ? ref : null}
-            className="w-full min-h-full shrink-0 snap-start snap-always px-6 md:px-12 pt-16 pb-36 flex flex-col justify-center text-black relative"
-          >
-            <div className="w-full max-w-4xl mx-auto flex flex-col justify-center">
-              <div className="flex items-center gap-4 mb-6">
-                <img
-                  className="w-10 h-10 rounded-full object-cover"
-                  src={post?.profilePic}
-                  referrerPolicy="no-referrer"
-                  alt={post?.author}
-                />
-                <span className="text-lg  font-medium tracking-tight  text-black/60 ">
-                  {post?.author}
-                </span>
-              </div>
-
-              <h1 className="text-3xl md:text-6xl lg:text-[5.5rem] leading-[0.95] tracking-tight uppercase font-medium mb-2 md:mb-10">
-                {post.title}
-              </h1>
-              <div className="w-1/3 border-b border-black/20 mb-2  md:mt-12"></div>
-
-              <p className="text-md md:text-2xl font-['ClashGrotesk-Variable']  uppercase leading-5 w-full">
-                {post.content}
-              </p>
-              {/* Adding a sleek bottom border separator for aesthetic context */}
-              {/* Media Section */}
-              <Media post={post} />
-              <Interaction postId={post._id} initialLikesCount={post.likeCount || 0} initialLikedState={post.isLiked || false}  initialCommentCount={post.commentCount || 0}/>
-            </div>
-          </div>
+            post={post}
+            innerRef={isLastElement ? ref : null}
+          />
         );
       })}
 

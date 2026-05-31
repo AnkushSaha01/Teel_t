@@ -12,10 +12,11 @@ import {
   updatePicklistApi
 } from "../services/profile.services";
 
-const useProfile = ({ backURI }) => {
+const useProfile = ({ backURI, accessToken }) => {
   return useQuery({
     queryKey: ["profile"],
     queryFn: () => getMe({ backURI }),
+    enabled: !!accessToken,
   });
 };
 

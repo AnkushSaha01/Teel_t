@@ -11,3 +11,10 @@ export const fetchFeed = async (backURI, pageParam = null) => {
 
   return res.data;
 };
+
+export const fetchPostById = async (backURI, postId) => {
+  const res = await axios.get(`${backURI}/post/get-post/${postId}`, {
+    withCredentials: true,
+  });
+  return res.data.post;
+};

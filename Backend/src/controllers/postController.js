@@ -198,4 +198,84 @@ const updatePost = async (req, res) => {
     }
 }
 
-module.exports = { createPost, getPost, deletePost, updatePost };
+const getPostById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user?._id;
+
+        const mongoose = require("mongoose");
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid post ID" });
+        }
+
+        const pipeline = [
+            {
+                $match: {
+                    _id: new mongoose.Types.ObjectId(id)
+                }
+            },
+            {
+                $lookup: {
+                    from: 'users',
+                    localField: 'author',
+                    foreignField: '_id',
+                    as: 'author'
+                }
+            },
+            { $unwind: { path: '$author' } }
+        ];
+
+        // If user is logged in, check if they liked this post
+        if (userId) {
+            const userObjectId = typeof userId === 'string' ? new mongoose.Types.ObjectId(userId) : userId;
+            pipeline.push({
+                $lookup: {
+                    from: 'likes',
+                    let: { postId: '$_id' },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $and: [
+                                        { $eq: ['$post', '$$postId'] },
+                                        { $eq: ['$user', userObjectId] }
+                                    ]
+                                }
+                            }
+                        }
+                    ],
+                    as: 'userLikes'
+                }
+            });
+        }
+
+        pipeline.push({
+            $project: {
+                title: 1,
+                content: 1,
+                media: 1,
+                author: '$author.username',
+                profilePic: '$author.profilePic',
+                createdAt: 1,
+                likeCount: { $ifNull: ['$likeCount', 0] },
+                commentCount: { $ifNull: ['$commentCount', 0] },
+                isLiked: userId ? { $gt: [{ $size: { $ifNull: ['$userLikes', []] } }, 0] } : { $literal: false }
+            }
+        });
+
+        const posts = await postModel.aggregate(pipeline);
+        if (posts.length === 0) {
+            return res.status(404).json({ message: "Post not found" });
+        }
+
+        res.status(200).json({ 
+            message: "Post fetched successfully", 
+            post: posts[0]
+        });
+    } catch (error) {
+        console.error("Fetch Post By ID Error:", error);
+        res.status(500).json({ message: "Error fetching post" });
+    }
+}
+
+module.exports = { createPost, getPost, deletePost, updatePost, getPostById };

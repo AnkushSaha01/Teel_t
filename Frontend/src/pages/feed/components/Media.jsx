@@ -7,7 +7,7 @@ const Media = ({post}) => {
 
   
   return (
-    <div className="w-full flex overflow-x-auto gap-3 snap-x snap-mandatory hide-scrollbar mt-6 mb-4 py-1">
+    <div className="w-full flex overflow-x-auto gap-3 snap-x snap-mandatory hide-scrollbar mt-2 mb-2 py-1">
       {post.media.map((item, index) => (
         <div 
           key={item._id || index}

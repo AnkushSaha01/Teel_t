@@ -116,12 +116,14 @@ const Interaction = ({ postId, initialLikesCount = 0, initialLikedState = false,
       </div>
 
       {/* Centered Glassmorphic Comments Dialog Popup */}
-      <CommentPopup
-        isOpen={showComments}
-        onClose={() => setShowComments(false)}
-        onCommentsCountChange={setCommentsCount}
-        postId={postId}
-      />
+      {showComments && (
+        <CommentPopup
+          isOpen={showComments}
+          onClose={() => setShowComments(false)}
+          onCommentsCountChange={setCommentsCount}
+          postId={postId}
+        />
+      )}
     </div>
   );
 };

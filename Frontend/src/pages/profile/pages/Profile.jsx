@@ -12,13 +12,13 @@ import useUnfollow from "../../search/hooks/useUnfollow";
 import PostTile from "../../search/components/postTile";
 
 const Profile = () => {
-  const { backURI, updateAccessToken } = useContext(GlobalContext);
+  const { backURI, accessToken } = useContext(GlobalContext);
   const navigate = useNavigate();
   const { userId } = useParams();
   const queryClient = useQueryClient();
 
   // Query own logged-in profile
-  const ownProfileResult = useProfile({ backURI });
+  const ownProfileResult = useProfile({ backURI , accessToken});
   const ownUserId = ownProfileResult.data?._id;
   const isOwnProfile = !userId || userId === ownUserId;
 

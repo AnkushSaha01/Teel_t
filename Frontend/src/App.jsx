@@ -15,6 +15,7 @@ import Messages from "./pages/messages/page/Messages";
 import Notifications from "./pages/notifications/pages/Notifications";
 import Chat from "./pages/messages/page/Chat";
 import GroupChat from "./pages/messages/page/GroupChat";
+import SinglePostPage from "./pages/feed/pages/SinglePostPage";
 import { registerSW } from 'virtual:pwa-register';
 
 
@@ -72,6 +73,10 @@ const router = createBrowserRouter([
       {
         path: "messages/group/:id",
         element: <GroupChat />
+      },
+      {
+        path: "post/:id",
+        element: <SinglePostPage />
       },
       {
         path:"notifications",
