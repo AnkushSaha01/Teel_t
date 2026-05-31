@@ -94,17 +94,27 @@ const App = () => {
     // Check if there is a token in the URL query string (from Google OAuth redirect)
     const params = new URLSearchParams(window.location.search);
     const urlToken = params.get("token");
+    const urlRefreshToken = params.get("refreshToken");
     if (urlToken) {
       updateAccessToken(urlToken);
+      if (urlRefreshToken) {
+        localStorage.setItem("refreshToken", urlRefreshToken);
+      }
       // Clean up the URL parameters so the token is not visible in the browser address bar
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.replaceState({}, document.title, cleanUrl);
       setIsAuthChecked(true);
     } else {
       // If no token in URL, perform silent refresh on initial mount to restore active session
-      axios.post(`${backURI}/auth/user/refresh`, {}, { withCredentials: true })
+      const fallbackRefreshToken = localStorage.getItem("refreshToken");
+      axios.post(`${backURI}/auth/user/refresh`, {
+        refreshToken: fallbackRefreshToken
+      }, { withCredentials: true })
         .then((res) => {
           updateAccessToken(res.data.accessToken);
+          if (res.data.refreshToken) {
+            localStorage.setItem("refreshToken", res.data.refreshToken);
+          }
         })
         .catch((err) => {
           console.log("No active session or session expired.");

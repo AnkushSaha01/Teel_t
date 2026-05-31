@@ -31,8 +31,8 @@ const googleAuthCallback = async (req, res) => {
   // Grab the explicit message set by Passport
   const authMsg = req.user.authMessage || "loggedIn";
 
-  // Redirect to frontend with token parameter
-  res.redirect(`${config.CLIENT_URL}/app/feed?token=${accessToken}`);
+  // Redirect to frontend with token and refreshToken parameters
+  res.redirect(`${config.CLIENT_URL}/app/feed?token=${accessToken}&refreshToken=${refreshToken}`);
 };
 
 module.exports = { googleAuthCallback };

@@ -68,11 +68,17 @@ axios.interceptors.response.use(
 
         try {
           // Call backend /refresh to rotate refresh token and get a new access token
-          const res = await axios.post(`${backURI}/auth/user/refresh`, {}, { withCredentials: true });
-          const { accessToken } = res.data;
+          const fallbackRefreshToken = localStorage.getItem("refreshToken");
+          const res = await axios.post(`${backURI}/auth/user/refresh`, {
+            refreshToken: fallbackRefreshToken
+          }, { withCredentials: true });
+          const { accessToken, refreshToken: newRefreshToken } = res.data;
 
           // Save new access token globally
           setAccessToken(accessToken);
+          if (newRefreshToken) {
+            localStorage.setItem("refreshToken", newRefreshToken);
+          }
 
           // Update headers and retry original request
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -86,6 +92,7 @@ axios.interceptors.response.use(
 
           // Refresh failed (e.g. refresh token expired or hijacked) -> clear session and redirect to login
           setAccessToken(null);
+          localStorage.removeItem("refreshToken");
           window.location.href = "/login";
           return Promise.reject(refreshError);
         }
@@ -94,6 +101,7 @@ axios.interceptors.response.use(
         const isPublicRoute = ["/login", "/register", "/"].includes(window.location.pathname);
         if (!isPublicRoute) {
           setAccessToken(null);
+          localStorage.removeItem("refreshToken");
           window.location.href = "/login";
         }
         return Promise.reject(error);

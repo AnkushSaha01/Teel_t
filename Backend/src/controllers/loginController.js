@@ -46,6 +46,7 @@ const loginController = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       accessToken,
+      refreshToken,
       user: {
         username: user.username,
         email: user.email,
@@ -59,7 +60,7 @@ const loginController = async (req, res) => {
 
 const logoutController = async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
     if (refreshToken) {
       // Invalidate the session on the database
       await sessionModel.deleteOne({ refreshToken });
@@ -82,7 +83,7 @@ const logoutController = async (req, res) => {
 
 const refreshController = async (req, res) => {
   try {
-    const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken || req.body.refreshToken;
     if (!refreshToken) {
       return res.status(401).json({ message: "Unauthorized: Missing refresh token" });
     }
@@ -126,7 +127,10 @@ const refreshController = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
-    return res.status(200).json({ accessToken: newAccessToken });
+    return res.status(200).json({ 
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken
+    });
   } catch (error) {
     return res.status(500).json({ message: "Internal server error", error });
   }

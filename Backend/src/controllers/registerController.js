@@ -62,6 +62,7 @@ const registerController = async (req, res) => {
     res.status(201).json({
       message: "User created successfully",
       accessToken,
+      refreshToken,
       user: {
         username,
         email,

@@ -19,6 +19,9 @@ const Login = () => {
     axios.post(backURI + "/auth/user/login", data, { withCredentials: true }).then((res) => {
       console.log(res.data);
       updateAccessToken(res.data.accessToken);
+      if (res.data.refreshToken) {
+        localStorage.setItem("refreshToken", res.data.refreshToken);
+      }
       navigate("/app/feed");
     }).catch((err) => {
       console.log(err);
