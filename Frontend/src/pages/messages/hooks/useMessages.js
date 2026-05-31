@@ -21,19 +21,23 @@ export const useMessages = () => {
 
   const follows = data?.follows || [];
 
-  // Map follows to the list of messageable users
+  console.log(follows);
+
+  // Map follows to the list of messageable users and filter out nulls/falsy values
   const messageableUsers = follows
     .map((follow) => {
       if (!currentUser) return null;
       // If we followed them and they accepted, or they followed us and we accepted:
-      return follow.follower._id === currentUser._id ? follow.followee : follow.follower;
+      return follow.follower?._id === currentUser._id ? follow.followee : follow.follower;
     })
-    
+    .filter(Boolean);
 
-  // Remove duplicates just in case
+  // Remove duplicates just in case using standard MongoDB _id
   const uniqueUsers = Array.from(
     new Map(messageableUsers.map((user) => [user._id, user])).values()
   );
+
+  console.log("uniqueUsers", uniqueUsers);
 
   return {
     users: uniqueUsers,
