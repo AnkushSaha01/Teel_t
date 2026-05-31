@@ -20,10 +20,11 @@ const googleAuthCallback = async (req, res) => {
   res.clearCookie("token");
 
   // Set Refresh Token in secure httpOnly cookie
+  const isProduction = process.env.NODE_ENV === "production";
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
-    secure: true, // MUST be true in production to allow HTTPS transmission
-    sameSite: "none", // MUST be "none" to allow cross-domain cookie transmission
+    secure: isProduction, // false in development to allow HTTP mobile/PWA testing, true in production
+    sameSite: isProduction ? "none" : "lax", // lax in development to allow local cross-port cookie sharing, none in production
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 
