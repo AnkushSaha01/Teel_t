@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useRef, useEffect} from "react";
 
 const Media = ({ post }) => {
   if (!post.media || post.media.length === 0) return null;
@@ -7,7 +7,6 @@ const Media = ({ post }) => {
 
   useEffect(() => {
     if (videoRef.current) {
-      // Force the DOM element to recognize the muted state
       videoRef.current.muted = true;
     }
   }, []);
