@@ -13,7 +13,6 @@ const Feed = () => {
 
   const hasTriggeredForCurrentView = useRef(false);
 
-  // Reset the lock when the element leaves the screen
   useEffect(() => {
     if (!inView) {
       hasTriggeredForCurrentView.current = false;

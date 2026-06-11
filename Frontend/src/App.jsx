@@ -16,72 +16,86 @@ import Notifications from "./pages/notifications/pages/Notifications";
 import Chat from "./pages/messages/page/Chat";
 import GroupChat from "./pages/messages/page/GroupChat";
 import SinglePostPage from "./pages/feed/pages/SinglePostPage";
+import ProtectedRoute from "./layout/ProtectedRoute";
+import PublicRoute from "./layout/PublicRoute";
 import { registerSW } from 'virtual:pwa-register';
 
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <LandingLayout />,
+    element: <PublicRoute />,
     children: [
       {
         path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
+        element: <LandingLayout />,
+        children: [
+          {
+            path: "/",
+            element: <Home />,
+          },
+          {
+            path: "/register",
+            element: <Register />,
+          },
+          {
+            path: "/login",
+            element: <Login />,
+          },
+        ],
       },
     ],
   },
   {
     path: "/app",
-    element: <AppLayout />,
+    element: <ProtectedRoute />,
     children: [
       {
-        path: "create-post",
-        element: <Form />,
+        path: "",
+        element: <AppLayout />,
+        children: [
+          {
+            path: "create-post",
+            element: <Form />,
+          },
+          {
+            path: "feed",
+            element: <Feed />,
+          },
+          {
+            path: "search",
+            element: <Search />,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+          },
+          {
+            path: "profile/:userId",
+            element: <Profile />,
+          },
+          {
+            path: "messages",
+            element: <Messages />,
+          },
+          {
+            path: "messages/:id",
+            element: <Chat />,
+          },
+          {
+            path: "messages/group/:id",
+            element: <GroupChat />,
+          },
+          {
+            path: "post/:id",
+            element: <SinglePostPage />,
+          },
+          {
+            path: "notifications",
+            element: <Notifications />,
+          },
+        ],
       },
-      {
-        path: "feed",
-        element: <Feed />,
-      },
-      {
-        path: "search",
-        element: <Search />
-      },
-      {
-        path: "profile",
-        element: <Profile />
-      },
-      {
-        path: "profile/:userId",
-        element: <Profile />
-      },
-      {
-        path:"messages",
-        element:<Messages />
-      },
-      {
-        path: "messages/:id",
-        element: <Chat />
-      },
-      {
-        path: "messages/group/:id",
-        element: <GroupChat />
-      },
-      {
-        path: "post/:id",
-        element: <SinglePostPage />
-      },
-      {
-        path:"notifications",
-        element:<Notifications />
-      }
     ],
   },
 ]);

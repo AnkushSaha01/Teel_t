@@ -98,6 +98,7 @@ const Profile = () => {
     } finally {
       // Always perform local session cleanup and redirect to login page
       updateAccessToken(null);
+      localStorage.removeItem("refreshToken");
       // Clear React Query cache so the next user doesn't see stale profile/feed data
       queryClient.clear();
       // Redirect to login page
